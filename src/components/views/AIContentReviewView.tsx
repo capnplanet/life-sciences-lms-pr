@@ -10,11 +10,11 @@ import {
   XCircle,
   Clock,
   Lightbulb,
-  GitBranch
+  GitBranch,
+  ArrowSquareOut
 } from '@phosphor-icons/react'
 import type { DraftContent } from '@/lib/types'
 import { evaluateGuardrails } from '@/lib/ai/guardrails'
-import { startRegwatchPolling } from '@/lib/ai/regwatch'
 import { formatDate, REGULATORY_AUTHORITIES } from '@/lib/helpers'
 import { toast } from 'sonner'
 
@@ -25,12 +25,15 @@ interface AIContentReviewProps {
   onReject: (draftId: string, reviewComment: string) => void
   onRequestRevision: (draftId: string, reviewComment: string) => void
   onProposeDraft: (draft: DraftContent) => void
+  onAuthorizeAgenticUpdate: (draftId: string) => void
+  pollingActive: boolean
+  onStartPolling: () => void
+  onStopPolling: () => void
 }
 
-export function AIContentReviewView({ draftContent, modulesLite, onApprove, onReject, onRequestRevision, onProposeDraft }: AIContentReviewProps) {
+export function AIContentReviewView({ draftContent, modulesLite, onApprove, onReject, onRequestRevision, onProposeDraft, onAuthorizeAgenticUpdate, pollingActive, onStartPolling, onStopPolling }: AIContentReviewProps) {
   const [selectedDraft, setSelectedDraft] = useState<string | null>(null)
   const [reviewComment, setReviewComment] = useState('')
-  const [polling, setPolling] = useState(false)
 
   const pendingDrafts = draftContent.filter(d => d.status === 'pending-review')
   const approvedDrafts = draftContent.filter(d => d.status === 'approved')
@@ -73,20 +76,16 @@ export function AIContentReviewView({ draftContent, modulesLite, onApprove, onRe
     setReviewComment('')
   }
 
-  // Real-time proposals (simulated polling). Toggle with button.
+  // Real-time proposals controlled by parent for persistence across navigation
   const togglePolling = () => {
-    if (polling) {
-      setPolling(false)
-      stop?.()
+    if (pollingActive) {
+      onStopPolling()
       toast.success('Stopped real-time proposals')
     } else {
-      setPolling(true)
-      stop = startRegwatchPolling(modulesLite, (draft) => onProposeDraft(draft), 20000)
+      onStartPolling()
       toast.success('Real-time proposals enabled')
     }
   }
-
-  let stop: null | (() => void) = null
 
   return (
     <div className="p-6 space-y-6">
@@ -102,8 +101,8 @@ export function AIContentReviewView({ draftContent, modulesLite, onApprove, onRe
           <span className="text-sm text-muted-foreground">
             {pendingDrafts.length} pending review
           </span>
-          <Button size="sm" variant={polling ? 'secondary' : 'outline'} onClick={togglePolling} className="ml-2">
-            {polling ? 'Pause Proposals' : 'Start Proposals'}
+          <Button size="sm" variant={pollingActive ? 'secondary' : 'outline'} onClick={togglePolling} className="ml-2">
+            {pollingActive ? 'Pause Proposals' : 'Start Proposals'}
           </Button>
         </div>
       </div>
@@ -275,6 +274,38 @@ export function AIContentReviewView({ draftContent, modulesLite, onApprove, onRe
                     </div>
 
                     <div>
+                      <h4 className="font-semibold text-sm mb-2">Verifiable Sources</h4>
+                      <div className="bg-muted/50 rounded-lg p-3 space-y-2 text-sm">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-muted-foreground">Primary document</span>
+                          <a
+                            className="text-primary inline-flex items-center gap-1 hover:underline"
+                            href={draft.regulatoryTrigger.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            View source
+                            <ArrowSquareOut className="h-4 w-4" />
+                          </a>
+                        </div>
+                        {draft.sources?.map((s, idx) => (
+                          <div key={idx} className="flex items-center justify-between gap-3">
+                            <span className="text-muted-foreground truncate mr-2">{s.label}</span>
+                            <a
+                              className="text-primary inline-flex items-center gap-1 hover:underline"
+                              href={s.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Open
+                              <ArrowSquareOut className="h-4 w-4" />
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
                       <h4 className="font-semibold text-sm mb-2">Proposed Content</h4>
                       <div className="bg-card border-2 border-primary/20 rounded-lg p-4">
                         <p className="text-sm font-serif leading-relaxed">
@@ -334,6 +365,9 @@ export function AIContentReviewView({ draftContent, modulesLite, onApprove, onRe
                       <Badge variant="outline" className="capitalize">
                         {draft.changeType}
                       </Badge>
+                      {draft.agenticAuthorized && (
+                        <Badge variant="default">Agentic authorized</Badge>
+                      )}
                     </div>
                     <CardTitle className="text-base">Module {draft.moduleId} Update</CardTitle>
                     <CardDescription className="mt-2">
@@ -347,6 +381,37 @@ export function AIContentReviewView({ draftContent, modulesLite, onApprove, onRe
                 <p className="text-sm font-serif leading-relaxed">
                   {draft.content}
                 </p>
+                <div className="mt-4 pt-4 border-t">
+                  <h4 className="font-semibold text-sm mb-2">Sources</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-muted-foreground">Primary document</span>
+                      <a
+                        className="text-primary inline-flex items-center gap-1 hover:underline"
+                        href={draft.regulatoryTrigger.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View source
+                        <ArrowSquareOut className="h-4 w-4" />
+                      </a>
+                    </div>
+                    {draft.sources?.map((s, idx) => (
+                      <div key={idx} className="flex items-center justify-between gap-3">
+                        <span className="text-muted-foreground truncate mr-2">{s.label}</span>
+                        <a
+                          className="text-primary inline-flex items-center gap-1 hover:underline"
+                          href={s.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Open
+                          <ArrowSquareOut className="h-4 w-4" />
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 {draft.comments && draft.comments.length > 0 && (
                   <div className="mt-4 pt-4 border-t">
                     <h4 className="font-semibold text-sm mb-2">Review Comments</h4>
@@ -359,6 +424,15 @@ export function AIContentReviewView({ draftContent, modulesLite, onApprove, onRe
                     </div>
                   </div>
                 )}
+                <div className="mt-4 pt-4 border-t flex items-center justify-end">
+                  <Button
+                    variant={draft.agenticAuthorized ? 'secondary' : 'default'}
+                    onClick={() => onAuthorizeAgenticUpdate(draft.id)}
+                    disabled={!!draft.agenticAuthorized}
+                  >
+                    Authorize Agentic Update
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}

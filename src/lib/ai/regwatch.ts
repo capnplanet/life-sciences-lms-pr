@@ -25,12 +25,45 @@ const MOCK_UPDATES: RegulatoryReference[] = [
   }
 ]
 
+// Minimal authority homepage mapping for origin verification
+const AUTHORITY_HOME: Record<string, string> = {
+  'FDA': 'https://www.fda.gov',
+  'EMA': 'https://www.ema.europa.eu',
+  'ICH': 'https://www.ich.org'
+}
+
 export function proposeDraftFromReference(moduleId: string, ref: RegulatoryReference): DraftContent {
   const id = `draft-${Math.random().toString(36).slice(2, 8)}`
   const changeType: DraftContent['changeType'] = 'update'
   const status: DraftContent['status'] = 'pending-review'
-  const content = `Incorporate latest ${ref.authority} update: ${ref.document} (${ref.section}). Align training with clarified expectations and emphasize impacted controls.`
-  const rationale = `Detected regulatory update from ${ref.authority}: ${ref.document}. Content should be updated to reflect current expectations.`
+  // Provide deeper, actionable update guidance
+  const content = [
+    `Update overview: Incorporate latest ${ref.authority} update — ${ref.document} (${ref.section}).`,
+    '',
+    'Curriculum changes:',
+    '- Add a new slide explaining the update scope, applicability, and effective date.',
+    '- Revise the "key controls" section to include specific expectations clarified by the update (map to SOPs).',
+    '- Include a short scenario-based interactive exercise demonstrating compliant vs non-compliant practice.',
+    '- Add a checklist for day-to-day execution aligned to the updated guidance.',
+    '',
+    'Learning objectives to add/refine:',
+    '- Learner can summarize the update and identify impacted processes.',
+    '- Learner can apply the updated control expectations to a realistic case.',
+    '- Learner can locate the relevant SOP/work instruction section(s) reflecting the update.',
+    '',
+    'Assessment adjustments:',
+    '- Add 2 knowledge-check questions targeting the updated expectation language.',
+    '- Add 1 scenario question that tests decision-making under the new guidance.',
+    '',
+    'SOP/Policy mapping suggestions:',
+    '- Link to SOP-001 Data Integrity (sections 4.2, 5.3) and WI-023 Signal Management triage (step 2).',
+    '- Insert cross-reference to CAPA procedure for remediation expectations if gaps are detected.',
+    '',
+    'Examples and citations:',
+    '- Provide 1 positive example and 1 anti-pattern specific to the update.',
+    `- Cite primary source: ${ref.url}`
+  ].join('\n')
+  const rationale = `Regulatory trigger: ${ref.authority} — ${ref.document} (${ref.section}). Training should be updated to ensure alignment with clarified expectations, effective on ${new Date(ref.effectiveDate).toDateString()}.`
   return {
     id,
     moduleId,
@@ -40,8 +73,33 @@ export function proposeDraftFromReference(moduleId: string, ref: RegulatoryRefer
     regulatoryTrigger: ref,
     status,
     generatedAt: new Date().toISOString(),
-    comments: []
+    comments: [],
+    sources: [
+      { label: `${ref.authority}: ${ref.document}`, url: ref.url },
+      // Authority homepage for origin verification
+      { label: `${ref.authority} — official site`, url: AUTHORITY_HOME[ref.authority] || ref.url }
+    ]
   }
+}
+
+// Fingerprint used for deduplication across polling cycles
+export function fingerprintDraft(d: DraftContent): string {
+  const parts = [
+    d.moduleId,
+    d.changeType,
+    d.regulatoryTrigger.authority,
+    d.regulatoryTrigger.document,
+    d.regulatoryTrigger.section,
+    new Date(d.regulatoryTrigger.effectiveDate).toISOString(),
+    d.regulatoryTrigger.url
+  ]
+  return parts.join('|').toLowerCase()
+}
+
+export function isDuplicateDraft(existing: DraftContent[], candidate: DraftContent): boolean {
+  const fp = fingerprintDraft(candidate)
+  const seen = new Set(existing.map(fingerprintDraft))
+  return seen.has(fp)
 }
 
 // Simple periodic proposal generator; caller owns integration into state

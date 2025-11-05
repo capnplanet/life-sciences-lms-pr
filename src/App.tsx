@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Toaster } from '@/components/ui/sonner'
 import { AppLayout } from '@/components/AppLayout'
@@ -23,6 +23,7 @@ import {
   MOCK_MODULE_METRICS,
   MOCK_AUDIT_LOG
 } from '@/lib/mockData'
+import { isDuplicateDraft, startRegwatchPolling } from '@/lib/ai/regwatch'
 import { generateCertificateCode } from '@/lib/helpers'
 import { toast } from 'sonner'
 
@@ -37,6 +38,8 @@ function App() {
   const [userProgress, setUserProgress] = useKV<UserProgress[]>('user-progress', MOCK_USER_PROGRESS)
   const [certifications, setCertifications] = useKV<Certification[]>('certifications', MOCK_CERTIFICATIONS)
   const [draftContent, setDraftContent] = useKV<DraftContent[]>('draft-content', MOCK_DRAFT_CONTENT)
+  const [regwatchActive, setRegwatchActive] = useKV<boolean>('regwatch-active', false)
+  const stopRegwatchRef = useRef<null | (() => void)>(null)
 
   const userRole = 'admin'
   const userName = 'Current User'
@@ -173,8 +176,52 @@ function App() {
     })
   }
   const handleProposeDraft = (draft: DraftContent) => {
-    setDraftContent((current) => ([...(current || [] as DraftContent[]), draft]))
+    setDraftContent((current) => {
+      const existing = (current || []) as DraftContent[]
+      if (isDuplicateDraft(existing, draft)) {
+        toast.message('Duplicate proposal ignored', { description: 'An identical update is already under review.' })
+        return existing
+      }
+      return [...existing, draft]
+    })
   }
+
+  const handleAuthorizeAgenticUpdate = (draftId: string) => {
+    setDraftContent((current) => {
+      const drafts = (current || []) as DraftContent[]
+      return drafts.map(d => d.id === draftId ? {
+        ...d,
+        agenticAuthorized: true,
+        comments: [...(d.comments || []), 'Agentic AI update authorized by approver']
+      } : d)
+    })
+    toast.success('Agentic AI update authorized')
+  }
+
+  // Ensure regwatch runs/stops based on persisted state
+  useEffect(() => {
+    if (regwatchActive) {
+      if (!stopRegwatchRef.current) {
+        stopRegwatchRef.current = startRegwatchPolling(
+          MOCK_MODULES.map(m => ({ id: m.id, domain: m.domain })),
+          (draft) => handleProposeDraft(draft),
+          20000
+        )
+      }
+    } else {
+      if (stopRegwatchRef.current) {
+        stopRegwatchRef.current()
+        stopRegwatchRef.current = null
+      }
+    }
+    // Cleanup on unmount
+    return () => {
+      if (stopRegwatchRef.current) {
+        stopRegwatchRef.current()
+        stopRegwatchRef.current = null
+      }
+    }
+  }, [regwatchActive])
 
   const renderView = () => {
     switch (currentView) {
@@ -286,6 +333,10 @@ function App() {
             onReject={handleDraftReject}
             onRequestRevision={handleDraftRequestRevision}
             onProposeDraft={handleProposeDraft}
+            onAuthorizeAgenticUpdate={handleAuthorizeAgenticUpdate}
+            pollingActive={regwatchActive || false}
+            onStartPolling={() => setRegwatchActive(true)}
+            onStopPolling={() => setRegwatchActive(false)}
           />
         )
       case 'ai-health':

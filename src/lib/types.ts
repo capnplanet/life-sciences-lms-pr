@@ -161,6 +161,11 @@ export interface RegulatoryReference {
   url: string
 }
 
+export interface SourceLink {
+  label: string
+  url: string
+}
+
 export interface DraftContent {
   id: string
   moduleId: string
@@ -173,6 +178,10 @@ export interface DraftContent {
   reviewedBy?: string
   reviewedAt?: string
   comments?: string[]
+  sources?: SourceLink[]
+  // Agentic follow-up workflow flags
+  agenticAuthorized?: boolean
+  agenticApplied?: boolean
 }
 
 export interface AnalyticsData {
