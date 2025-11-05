@@ -55,7 +55,8 @@ export function evaluateGuardrails(draft: DraftContent): GuardrailReport {
     'mod-002': ['pharmacovigilance', 'signal', 'adverse', 'p v', 'meddra'],
     'mod-003': ['g m p', 'c a p a', 'deviation', 'batch', 'alcoa'],
     'mod-004': ['c t d', 'e c t d', 'submission', 'prime', 'breakthrough'],
-    'mod-005': ['quality assurance', 'audit', 't m f', 'oversight']
+    'mod-005': ['quality assurance', 'audit', 't m f', 'oversight'],
+    'mod-006': ['monitoring', 'r b m', 's d v', 's d r', 't m f', 'feasibility', 'deviation', 'consent']
   }
   const textBlob = [draft.content, draft.rationale, draft.regulatoryTrigger.document].join(' ').toLowerCase()
   const hints = domainHints[draft.moduleId] || []

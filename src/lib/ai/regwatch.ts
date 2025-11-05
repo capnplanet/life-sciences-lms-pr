@@ -22,6 +22,27 @@ const MOCK_UPDATES: RegulatoryReference[] = [
     section: 'Module IX',
     effectiveDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
     url: 'https://www.ema.europa.eu/en/human-regulatory/post-authorisation/pharmacovigilance'
+  },
+  {
+    authority: 'ICH',
+    document: 'E8(R1) General Considerations for Clinical Studies',
+    section: 'Guideline',
+    effectiveDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+    url: 'https://www.ich.org/page/efficacy-guidelines'
+  },
+  {
+    authority: 'FDA',
+    document: 'A Risk-Based Approach to Monitoring of Clinical Investigations',
+    section: 'Guidance',
+    effectiveDate: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString(),
+    url: 'https://www.fda.gov/media/116754/download'
+  },
+  {
+    authority: 'EMA',
+    document: 'Reflection paper on risk-based quality management in clinical trials',
+    section: 'Reflection paper',
+    effectiveDate: new Date(Date.now() - 400 * 24 * 60 * 60 * 1000).toISOString(),
+    url: 'https://www.ema.europa.eu/en/documents/scientific-guideline/reflection-paper-risk-based-quality-management-clinical-trials_en.pdf'
   }
 ]
 
@@ -112,9 +133,9 @@ export function startRegwatchPolling(
     const ref = MOCK_UPDATES[Math.floor(Math.random() * MOCK_UPDATES.length)]
     // naive routing: pick a module by authority/domain mapping
     const map: Record<string, string[]> = {
-      'FDA': ['gmp', 'quality-assurance'],
-      'EMA': ['pharmacovigilance'],
-      'ICH': ['gcp', 'regulatory-affairs']
+      'FDA': ['gmp', 'quality-assurance', 'clinical-operations'],
+      'EMA': ['pharmacovigilance', 'clinical-operations'],
+      'ICH': ['gcp', 'regulatory-affairs', 'clinical-operations']
     }
     const targets = map[ref.authority] || []
     const candidates = modules.filter(m => targets.includes(m.domain))

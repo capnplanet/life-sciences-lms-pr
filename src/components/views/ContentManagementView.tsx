@@ -14,6 +14,7 @@ import {
   ChartBar
 } from '@phosphor-icons/react'
 import type { LearningModule, AuditLogEntry } from '@/lib/types'
+import { exportAuditJSON, exportAuditCSV } from '@/lib/audit'
 import { formatDate, formatDateTime, INDUSTRY_DOMAINS } from '@/lib/helpers'
 import { toast } from 'sonner'
 
@@ -44,6 +45,30 @@ export function ContentManagementView({ modules, auditLog }: ContentManagementPr
 
   const handleDeleteModule = (moduleId: string) => {
     toast.error('Delete confirmation would appear here')
+  }
+
+  const handleExportJSON = () => {
+    const data = exportAuditJSON(auditLog)
+    const blob = new Blob([data], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `audit-log-${Date.now()}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+    toast.success('Audit log exported (JSON)')
+  }
+
+  const handleExportCSV = () => {
+    const data = exportAuditCSV(auditLog)
+    const blob = new Blob([data], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `audit-log-${Date.now()}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    toast.success('Audit log exported (CSV)')
   }
 
   return (
@@ -220,10 +245,18 @@ export function ContentManagementView({ modules, auditLog }: ContentManagementPr
         <TabsContent value="audit" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Audit Trail</CardTitle>
-              <CardDescription>
-                Complete audit log of all system activities (21 CFR Part 11 compliant)
-              </CardDescription>
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <CardTitle>Audit Trail</CardTitle>
+                  <CardDescription>
+                    Complete audit log of all system activities (21 CFR Part 11 compliant)
+                  </CardDescription>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={handleExportCSV}>Export CSV</Button>
+                  <Button onClick={handleExportJSON}>Export JSON</Button>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">

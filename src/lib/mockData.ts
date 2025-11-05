@@ -27,13 +27,16 @@ export const MOCK_MODULES: LearningModule[] = [
         duration: 45,
         transcript: 'Good Clinical Practice (GCP) is the international ethical and scientific quality standard for designing, conducting, recording, and reporting trials involving human subjects. Compliance with GCP assures that the rights, safety, and well‑being of trial participants are protected and that clinical trial data are credible. Core principles include informed consent and subject privacy, IRB/IEC oversight, scientifically sound protocols, qualified personnel, adequate resources, ongoing monitoring, accurate and contemporaneous records, and robust quality systems. ICH E6(R2) strengthens expectations around risk‑based quality management, vendor oversight, and data integrity, while the E6(R3) concept papers emphasize proportionality and critical‑to‑quality factors.',
         bookmarks: [
-          { id: 'bm-001', timestamp: 0, note: 'What is GCP: ethical and scientific standard protecting subjects and ensuring credible data.' , createdAt: new Date().toISOString() },
-          { id: 'bm-002', timestamp: 10, note: 'Core principles: informed consent, IRB/IEC, protocol adherence, monitoring, documentation.' , createdAt: new Date().toISOString() },
-          { id: 'bm-003', timestamp: 20, note: 'Data integrity and ALCOA+: attributable, legible, contemporaneous, original, accurate (+ complete/consistent/enduring/available).', createdAt: new Date().toISOString() },
-          { id: 'bm-004', timestamp: 30, note: 'Risk‑based quality management and vendor oversight per ICH E6(R2)/(R3) direction.', createdAt: new Date().toISOString() },
-          { id: 'bm-005', timestamp: 40, note: 'Essential documents and TMF: contemporaneous, complete, retrievable.', createdAt: new Date().toISOString() },
-          { id: 'bm-006', timestamp: 50, note: 'Monitoring approaches: centralized vs on‑site, proportionate to risk.', createdAt: new Date().toISOString() },
-          { id: 'bm-007', timestamp: 60, note: 'Investigator responsibilities and adequate resources (I C H E6 4.1).', createdAt: new Date().toISOString() }
+          { id: 'bm-001', timestamp: 0, note: 'Definition and purpose: G C P protects subjects and ensures credible data across the trial lifecycle. Link to Belmont principles and I R B / I E C oversight.', createdAt: new Date().toISOString() },
+          { id: 'bm-002', timestamp: 8, note: 'Ethical foundation: Respect, Beneficence, Justice → operationalized via informed consent, privacy, and ongoing safety monitoring.', createdAt: new Date().toISOString() },
+          { id: 'bm-003', timestamp: 16, note: 'Protocol design: identify critical‑to‑quality (C T Q) factors; predefine endpoints, monitoring plans, Q T Ls, and risk controls.', createdAt: new Date().toISOString() },
+          { id: 'bm-004', timestamp: 24, note: 'Informed consent specifics: version control, language, interpreter/witness when needed, copy to subject; re‑consent on amendments.', createdAt: new Date().toISOString() },
+          { id: 'bm-005', timestamp: 32, note: 'Investigator responsibilities (E6 4.1): adequate staff, facilities, training; delegation logs; oversight of tasks and vendors.', createdAt: new Date().toISOString() },
+          { id: 'bm-006', timestamp: 40, note: 'Monitoring: risk‑based mix of centralized and on‑site; focus on C T Q; use K R I s and Q T Ls to detect and act on issues early.', createdAt: new Date().toISOString() },
+          { id: 'bm-007', timestamp: 48, note: 'Data integrity (A L C O A+): contemporaneous entries, controlled records, audit trails; avoid backdating and shared logins—examples included.', createdAt: new Date().toISOString() },
+          { id: 'bm-008', timestamp: 56, note: 'Essential documents and T M F: organize by zone; ensure completeness, retrievability, and version history for inspections.', createdAt: new Date().toISOString() },
+          { id: 'bm-009', timestamp: 64, note: 'Computerized systems and vendors: validation/qualification, access controls, change control, service‑level expectations.', createdAt: new Date().toISOString() },
+          { id: 'bm-010', timestamp: 72, note: 'Common findings: missing consent pages, protocol deviations not assessed, incomplete source; prevention tips and quality checks.', createdAt: new Date().toISOString() }
         ]
       },
       {
@@ -242,14 +245,15 @@ export const MOCK_MODULES: LearningModule[] = [
         title: 'Introduction to Pharmacovigilance',
   content: 'Pharmacovigilance (PV) is the science and activities for detecting, assessing, understanding, and preventing adverse effects or other medicine‑related problems. This module covers GPVP foundations, safety data sources, and signal detection basics.',
   duration: 50,
-        transcript: 'Pharmacovigilance ensures that the benefit‑risk profile of medicinal products remains positive throughout their lifecycle. Core processes include intake and processing of individual case safety reports, medical coding (MedDRA), causality and seriousness assessment, expedited and periodic reporting, and signal management. Data sources include spontaneous reports, literature, studies and registries, EHR/claims, and social media (with caution). Signal detection combines quantitative methods with medical judgment per GVP Module IX.',
+        transcript: 'Pharmacovigilance ensures that the benefit‑risk profile of medicinal products remains positive throughout their lifecycle. Core processes include intake and processing of individual case safety reports (ICSRs), medical coding (MedDRA), causality and seriousness assessment, expedited and periodic reporting, and signal management. Data sources include spontaneous reports, literature, studies and registries, EHR/claims, and social media (with caution). Signal detection combines quantitative methods with medical judgment per GVP Module IX; actions range from additional monitoring to labeling changes or RMP updates.',
         bookmarks: [
-          { id: 'bm-101', timestamp: 0, note: 'PV purpose: maintain positive benefit‑risk across the product lifecycle.', createdAt: new Date().toISOString() },
-          { id: 'bm-102', timestamp: 12, note: 'ICSR processing: case intake → coding → assessment → reporting obligations.', createdAt: new Date().toISOString() },
-          { id: 'bm-103', timestamp: 24, note: 'Data sources: spontaneous, literature, clinical, real‑world (EHR/claims).', createdAt: new Date().toISOString() },
-          { id: 'bm-104', timestamp: 36, note: 'Signal detection: disproportionality + clinical review per GVP IX.', createdAt: new Date().toISOString() },
-          { id: 'bm-105', timestamp: 44, note: 'Periodic reporting: PBRER/PSUR—aggregate safety evaluation.', createdAt: new Date().toISOString() },
-          { id: 'bm-106', timestamp: 54, note: 'Roles: Q P P V and safety governance.', createdAt: new Date().toISOString() }
+          { id: 'bm-101', timestamp: 0, note: 'PV objective: protect patients by continuously assessing benefit‑risk and acting on new safety information.', createdAt: new Date().toISOString() },
+          { id: 'bm-102', timestamp: 8, note: 'ICSR flow: intake → de‑duplication → MedDRA coding → seriousness/expectedness → causality → regulatory reporting (FAERS/EudraVigilance).', createdAt: new Date().toISOString() },
+          { id: 'bm-103', timestamp: 16, note: 'Seriousness vs expectedness: drives expedited timelines (7/15‑day S U S A R rules) and periodic reporting.', createdAt: new Date().toISOString() },
+          { id: 'bm-104', timestamp: 24, note: 'Data sources: spontaneous, literature screening, clinical studies, registries, E H R/claims; strengths/limits and bias considerations.', createdAt: new Date().toISOString() },
+          { id: 'bm-105', timestamp: 32, note: 'Signal detection methods: P R R / R O R thresholds + clinical review; triage, validation, analysis, assessment, recommendation.', createdAt: new Date().toISOString() },
+          { id: 'bm-106', timestamp: 40, note: 'Periodic aggregate reports: P S U R / P B R E R content and when to update labeling and risk minimization.', createdAt: new Date().toISOString() },
+          { id: 'bm-107', timestamp: 48, note: 'Roles and governance: Q P P V accountability, safety management team, decision logs, and health authority interactions.', createdAt: new Date().toISOString() }
         ]
       },
       {
@@ -451,12 +455,16 @@ export const MOCK_MODULES: LearningModule[] = [
         duration: 55,
         transcript: 'GMP quality systems aim to consistently produce medicinal products that meet specifications and patient needs. Key elements include management responsibility and quality planning, robust procedures and records, training and qualification, controlled change management, deviation investigation and effective CAPA, internal audits, and supplier oversight. Alignment with ICH Q10 links these elements for continual improvement within a pharmaceutical quality system.',
         bookmarks: [
-          { id: 'bm-201', timestamp: 0, note: 'GMP objective and link to patient safety and product quality.', createdAt: new Date().toISOString() },
-          { id: 'bm-202', timestamp: 14, note: 'Quality System elements: SOPs, records, training, change control.', createdAt: new Date().toISOString() },
-          { id: 'bm-203', timestamp: 28, note: 'Deviation/CAPA lifecycle and effectiveness checks.', createdAt: new Date().toISOString() },
-          { id: 'bm-204', timestamp: 42, note: 'Supplier qualification and internal audits to ensure control.', createdAt: new Date().toISOString() },
-          { id: 'bm-205', timestamp: 52, note: 'Data integrity and ALCOA+ expectations under 21 C F R Part 211.', createdAt: new Date().toISOString() },
-          { id: 'bm-206', timestamp: 62, note: 'Cleaning validation and cross‑contamination prevention overview.', createdAt: new Date().toISOString() }
+          { id: 'bm-201', timestamp: 0, note: 'G M P objective: consistent quality and patient safety; link to product lifecycle and continual improvement.', createdAt: new Date().toISOString() },
+          { id: 'bm-202', timestamp: 8, note: 'Quality System: Quality Manual, procedures, training, records control; management review and quality planning cadence.', createdAt: new Date().toISOString() },
+          { id: 'bm-203', timestamp: 16, note: 'Change control: impact assessment, risk evaluation, pre‑approval, verification/validation, and effectiveness review.', createdAt: new Date().toISOString() },
+          { id: 'bm-204', timestamp: 24, note: 'Deviation/C A P A lifecycle: root cause (5‑Whys/Fishbone), corrective vs preventive, effectiveness checks with objective criteria.', createdAt: new Date().toISOString() },
+          { id: 'bm-205', timestamp: 32, note: 'Supplier qualification: risk‑based approval, technical/quality agreements, monitoring, and periodic requalification.', createdAt: new Date().toISOString() },
+          { id: 'bm-206', timestamp: 40, note: 'Data integrity (Part 11): unique logins, audit trails, validation documentation, backup/restore testing.', createdAt: new Date().toISOString() },
+          { id: 'bm-207', timestamp: 48, note: 'Cleaning validation: acceptance criteria, swab/rinse methods, worst‑case selection, campaign limits, and hold times.', createdAt: new Date().toISOString() },
+          { id: 'bm-208', timestamp: 56, note: 'Internal audit program: risk‑based schedules, objective evidence collection, and CAPA follow‑up.', createdAt: new Date().toISOString() },
+          { id: 'bm-209', timestamp: 64, note: 'Training and qualification: role‑based curricula, effectiveness checks, and retraining triggers.', createdAt: new Date().toISOString() },
+          { id: 'bm-210', timestamp: 72, note: 'APR/PQR trending: yield, deviations, complaints; management review inputs for continuous improvement.', createdAt: new Date().toISOString() }
         ]
       },
       {
@@ -653,11 +661,14 @@ export const MOCK_MODULES: LearningModule[] = [
         duration: 70,
         transcript: 'Global regulatory strategy balances scientific evidence with varied regional expectations. Sponsors engage with agencies through scientific advice, Type B/C meetings, and parallel consultations. Harmonization via ICH supports CTD/eCTD structures, but regional Module 1 requirements differ. Expedited programs like Breakthrough Therapy (FDA) and PRIME (EMA) can accelerate development where criteria are met.',
         bookmarks: [
-          { id: 'bm-301', timestamp: 0, note: 'Agencies and harmonization: FDA, EMA, PMDA, MHRA, Health Canada; role of ICH.', createdAt: new Date().toISOString() },
-          { id: 'bm-302', timestamp: 18, note: 'Regulatory pathways: IND/CTA → NDA/BLA/MAA; scientific advice and meetings.', createdAt: new Date().toISOString() },
-          { id: 'bm-303', timestamp: 36, note: 'Expedited programs and criteria (Breakthrough, PRIME).', createdAt: new Date().toISOString() },
-          { id: 'bm-304', timestamp: 52, note: 'e C T D structure and regional Module 1 differences.', createdAt: new Date().toISOString() },
-          { id: 'bm-305', timestamp: 62, note: 'Labeling alignment and regional variations.', createdAt: new Date().toISOString() }
+          { id: 'bm-301', timestamp: 0, note: 'Agencies and scope: F D A, E M A, P M D A, M H R A, Health Canada; harmonization via I C H frameworks and where they diverge.', createdAt: new Date().toISOString() },
+          { id: 'bm-302', timestamp: 10, note: 'Pathways overview: I N D / C T A → N D A / B L A / M A A; evidence expectations and timing considerations.', createdAt: new Date().toISOString() },
+          { id: 'bm-303', timestamp: 20, note: 'Interactions: Type B/C meetings, Scientific Advice, parallel consultations; meeting objectives and briefing packages.', createdAt: new Date().toISOString() },
+          { id: 'bm-304', timestamp: 30, note: 'Expedited programs: Breakthrough/Accelerated Approval (U S), PRIME/Conditional Approval (E U)—eligibility and obligations.', createdAt: new Date().toISOString() },
+          { id: 'bm-305', timestamp: 40, note: 'C T D/e C T D: module purposes, lifecycle management, granularity, and common technical issues.', createdAt: new Date().toISOString() },
+          { id: 'bm-306', timestamp: 50, note: 'Module 1 regional differences: local forms, labeling templates, pharmacovigilance system master files, device/combination impacts.', createdAt: new Date().toISOString() },
+          { id: 'bm-307', timestamp: 60, note: 'Labeling alignment: core data sheet vs regional labels; justifying variations; change control and tracking across markets.', createdAt: new Date().toISOString() },
+          { id: 'bm-308', timestamp: 70, note: 'Common pitfalls: insufficient pre‑meeting questions, inconsistent Module 2 summaries, and e C T D technical rejects.', createdAt: new Date().toISOString() }
         ]
       },
       {
@@ -846,11 +857,16 @@ export const MOCK_MODULES: LearningModule[] = [
         duration: 60,
         transcript: 'Quality assurance provides confidence that clinical research is conducted, and data are generated, in accordance with applicable standards. A risk‑based QA program covers SOP governance, qualified auditors, independence, a risk‑driven audit plan, TMF and data integrity checks, issue management, and vendor oversight. Outputs drive CAPA and continual improvement.',
         bookmarks: [
-          { id: 'bm-401', timestamp: 0, note: 'Role of QA: confidence via independent oversight and continuous improvement.', createdAt: new Date().toISOString() },
-          { id: 'bm-402', timestamp: 15, note: 'Risk‑based audit program and vendor oversight.', createdAt: new Date().toISOString() },
-          { id: 'bm-403', timestamp: 30, note: 'TMF quality and data integrity checks.', createdAt: new Date().toISOString() },
-          { id: 'bm-404', timestamp: 45, note: 'Issue management and CAPA linkage to prevent recurrence.', createdAt: new Date().toISOString() },
-          { id: 'bm-405', timestamp: 55, note: 'Vendor oversight sampling and follow‑up.', createdAt: new Date().toISOString() }
+          { id: 'bm-401', timestamp: 0, note: 'QA role: independent oversight, risk‑based planning, and continuous improvement; separation from operations.', createdAt: new Date().toISOString() },
+          { id: 'bm-402', timestamp: 8, note: 'SOP governance: authoring, review/approval, version control, training, and effectiveness checks.', createdAt: new Date().toISOString() },
+          { id: 'bm-403', timestamp: 16, note: 'Audit program: risk assessment, annual plan, scope/sampling, auditor independence/qualification, reporting timelines.', createdAt: new Date().toISOString() },
+          { id: 'bm-404', timestamp: 24, note: 'Vendor oversight: qualification, quality agreements, audit/monitoring, KPI reviews, and escalation routes.', createdAt: new Date().toISOString() },
+          { id: 'bm-405', timestamp: 32, note: 'TMF quality: completeness, timeliness, indexing/metadata, periodic QC, inspection‑readiness binders.', createdAt: new Date().toISOString() },
+          { id: 'bm-406', timestamp: 40, note: 'Data integrity checks: ALCOA+, audit trail review strategy, user access management, periodic assessments.', createdAt: new Date().toISOString() },
+          { id: 'bm-407', timestamp: 48, note: 'Issue management: grading of findings (Critical/Major/Minor), deviation linkage, and cross‑functional CAPA.', createdAt: new Date().toISOString() },
+          { id: 'bm-408', timestamp: 56, note: 'CAPA system: root cause analysis, action plans, owners/due dates, effectiveness verification criteria.', createdAt: new Date().toISOString() },
+          { id: 'bm-409', timestamp: 64, note: 'Management review: trending, systemic issues, resourcing, and improvement actions; QA metrics dashboard.', createdAt: new Date().toISOString() },
+          { id: 'bm-410', timestamp: 72, note: 'Regulatory expectations: I C H E6(R2), M H R A/EMA inspection themes; common pitfalls and remediation.', createdAt: new Date().toISOString() }
         ]
       },
       {
@@ -1016,6 +1032,103 @@ export const MOCK_MODULES: LearningModule[] = [
         effectiveDate: '2016-11-09',
         url: 'https://database.ich.org/sites/default/files/E6_R2_Addendum.pdf'
       }
+    ]
+  }
+  ,
+  {
+    id: 'mod-006',
+    title: 'Clinical Operations Excellence',
+    description: 'Operational planning and execution of clinical trials: feasibility, site selection, monitoring, TMF, vendor oversight, RBM, and inspection readiness.',
+    domain: 'clinical-operations',
+    duration: 300,
+    difficulty: 'intermediate',
+    prerequisites: ['mod-001'],
+    content: [
+      {
+        id: 'sec-019',
+        type: 'video',
+        title: 'Core Clinical Operations',
+        content: 'End-to-end trial operations from protocol operationalization and feasibility to site activation, monitoring, data flow, and closeout. Emphasis on risk-based execution and inspection-readiness.',
+        duration: 60,
+        transcript: 'Clinical Operations translates clinical strategy into executable plans. Key components include feasibility and site selection, vendor/CRO oversight, monitoring strategy (on-site/remote/centralized), source data review/verification, informed consent execution, protocol deviation handling, SAE/AE flow coordination with PV, TMF completeness and timeliness, and inspection readiness. Risk-based approaches target critical-to-quality factors and leverage centralized monitoring to focus on impactful issues.',
+        bookmarks: [
+          { id: 'bm-501', timestamp: 0, note: 'Protocol operationalization: define C T Q factors; align schedule of activities, endpoints, and data flow.', createdAt: new Date().toISOString() },
+          { id: 'bm-502', timestamp: 8, note: 'Feasibility/site selection: country/start-up timelines, patient pool, competing trials, site past performance/quality.', createdAt: new Date().toISOString() },
+          { id: 'bm-503', timestamp: 16, note: 'Study start-up: start-up package, essential documents, I R B / I E C approvals, greenlight checklists.', createdAt: new Date().toISOString() },
+          { id: 'bm-504', timestamp: 24, note: 'Monitoring plan: risk‑based strategy, visit cadence, centralized analytics, triggers (K R I / Q T L).', createdAt: new Date().toISOString() },
+          { id: 'bm-505', timestamp: 32, note: 'S D R vs S D V: what to review vs verify; target critical data and processes to reduce error and burden.', createdAt: new Date().toISOString() },
+          { id: 'bm-506', timestamp: 40, note: 'Informed consent execution: process controls, versioning, re‑consent triggers, documentation expectations.', createdAt: new Date().toISOString() },
+          { id: 'bm-507', timestamp: 48, note: 'Deviation management: detect, classify, assess impact, remediate; escalation and CAPA linkage where systemic.', createdAt: new Date().toISOString() },
+          { id: 'bm-508', timestamp: 56, note: 'SAE/AE flow: timely reporting pathways, reconciliation with PV, data consistency checks.', createdAt: new Date().toISOString() },
+          { id: 'bm-509', timestamp: 64, note: 'TMF management: filing structure, completeness/timeliness QC, e T M F access controls and audit trails.', createdAt: new Date().toISOString() },
+          { id: 'bm-510', timestamp: 72, note: 'Inspection readiness: story of the trial, key risks/mitigations, pre‑inspection checks, interview preparation.', createdAt: new Date().toISOString() }
+        ]
+      },
+      {
+        id: 'sec-020',
+        type: 'interactive',
+        title: 'Monitoring Triage Exercise',
+        content: 'Prioritize monitoring focus areas based on K R I movement and site performance signals.',
+        duration: 30,
+        interaction: {
+          question: 'A site’s K R I shows rising query aging and delayed S A E follow‑ups. What is the best immediate action?',
+          options: [
+            'Increase S D V to 100% across all data',
+            'Targeted on‑site/remote review focusing on S A E reconciliation and data queries',
+            'Close the site until resolved',
+            'No action until next routine visit'
+          ],
+          correctIndex: 1,
+          rationale: 'Risk‑based monitoring targets critical signals with focused review and follow‑up, rather than blanket 100% S D V or inaction.'
+        }
+      },
+      {
+        id: 'sec-021',
+        type: 'scenario',
+        title: 'Consent Version Control Case',
+        content: 'A site used an outdated consent form for two subjects after an amendment. Determine remediation and reporting.',
+        duration: 25,
+        interaction: {
+          question: 'Which is the most compliant remediation?',
+          options: [
+            'Backdate new consents to original dates',
+            'Obtain re‑consent with correct version, assess impact, and document deviation/C A P A',
+            'Ignore because no safety impact',
+            'Ask sponsor to waive consent'
+          ],
+          correctIndex: 1,
+          rationale: 'Re‑consent with the correct version and deviation documentation/impact assessment are required; backdating is non‑compliant.'
+        }
+      }
+    ],
+    assessments: [
+      {
+        id: 'assess-006',
+        title: 'Clinical Operations Assessment',
+        type: 'final',
+        questions: [
+          { id: 'q-co-1', type: 'mcq', difficulty: 'easy', question: 'Risk‑based monitoring aims to…', options: ['Eliminate monitoring', 'Focus on C T Q and key risks', 'Ensure 100% S D V', 'Replace site visits entirely'], correctAnswer: 'Focus on C T Q and key risks', explanation: 'RBM targets critical‑to‑quality factors via proportionate oversight.', regulatoryContext: 'I C H E6(R2) / I C H E8(R1) / F D A RBM Guidance' },
+          { id: 'q-co-2', type: 'mcq', difficulty: 'medium', question: 'S D R vs S D V refers to…', options: ['Review vs Verify of source data', 'Sponsor vs Site roles', 'Risk vs Quality', 'Audit vs Inspection'], correctAnswer: 'Review vs Verify of source data', explanation: 'S D R examines source for quality; S D V verifies transcription to CRF/eCRF.', regulatoryContext: 'Industry practice / I C H' },
+          { id: 'q-co-3', type: 'mcq', difficulty: 'medium', question: 'A K R I spike in query aging suggests…', options: ['Strong performance', 'Potential site management/data entry issues', 'No action needed', 'Protocol misalignment only'], correctAnswer: 'Potential site management/data entry issues', explanation: 'Aging queries can indicate inadequate follow‑up or staffing; triage accordingly.', regulatoryContext: 'RBM analytics' },
+          { id: 'q-co-4', type: 'mcq', difficulty: 'hard', question: 'Which control supports consent version management?', options: ['Uncontrolled templates', 'Delegation logs only', 'Greenlight checklist verifying current I C F version and training', '100% S D V of labs only'], correctAnswer: 'Greenlight checklist verifying current I C F version and training', explanation: 'Start‑up controls prevent outdated I C F usage.', regulatoryContext: 'I C H E6 / operational controls' },
+          { id: 'q-co-5', type: 'mcq', difficulty: 'medium', question: 'Effective T M F management requires…', options: ['Filing at closeout', 'Timely filing, completeness checks, and controlled access', 'Only paper copies', 'No audit trails'], correctAnswer: 'Timely filing, completeness checks, and controlled access', explanation: 'e T M F requires timely, complete, controlled records.', regulatoryContext: 'Inspection expectations' },
+          { id: 'q-co-6', type: 'multi-select', difficulty: 'medium', question: 'Select examples of C T Q processes', options: ['Consent process', 'Primary endpoint assessments', 'Travel booking', 'S A E reporting'], correctAnswer: ['Consent process','Primary endpoint assessments','S A E reporting'], explanation: 'C T Q focuses on participant protection and data criticality.', regulatoryContext: 'I C H E8(R1)' }
+        ],
+        passingScore: 80,
+        timeLimit: 60,
+        adaptive: false
+      }
+    ],
+    certification: true,
+    version: '1.0',
+    status: 'published',
+    createdBy: 'admin-003',
+    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    regulatoryReferences: [
+      { authority: 'ICH', document: 'E8(R1) General Considerations for Clinical Studies', section: 'All', effectiveDate: '2019-12-06', url: 'https://www.ich.org/page/efficacy-guidelines' },
+      { authority: 'ICH', document: 'E6(R2) Good Clinical Practice', section: 'All', effectiveDate: '2016-11-09', url: 'https://database.ich.org/sites/default/files/E6_R2_Addendum.pdf' },
+      { authority: 'FDA', document: 'Risk-Based Monitoring Guidance', section: 'All', effectiveDate: '2013-08-13', url: 'https://www.fda.gov/media/116754/download' },
+      { authority: 'EMA', document: 'Reflection paper on risk-based quality management', section: 'All', effectiveDate: '2013-11-18', url: 'https://www.ema.europa.eu/en/documents/scientific-guideline/reflection-paper-risk-based-quality-management-clinical-trials_en.pdf' }
     ]
   }
 ]

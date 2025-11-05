@@ -242,12 +242,16 @@ export interface AuditLogEntry {
   timestamp: string
   userId: string
   userName: string
+  actorRole?: string
+  origin?: 'ui' | 'ai'
   action: string
   resource: string
   resourceId: string
   details: Record<string, unknown>
   ipAddress?: string
   userAgent?: string
+  prevHash?: string
+  hash?: string
 }
 
 export interface LearningRecommendation {
