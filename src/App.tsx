@@ -11,6 +11,7 @@ import { CertificationsView } from '@/components/views/CertificationsView'
 import { ContentManagementView } from '@/components/views/ContentManagementView'
 import { AIContentReviewView } from '@/components/views/AIContentReviewView'
 import { AssessmentsView } from '@/components/views/AssessmentsView'
+import { GlossaryView } from '@/components/views/GlossaryView'
 import type { UserProgress, Certification, AssessmentResult } from '@/lib/types'
 import { 
   MOCK_MODULES, 
@@ -221,8 +222,12 @@ function App() {
           <CertificationsView
             certifications={safeCertifications}
             onNavigate={handleNavigate}
+            userName={userName}
           />
         )
+
+      case 'glossary':
+        return <GlossaryView />
 
       case 'content-management':
         return (

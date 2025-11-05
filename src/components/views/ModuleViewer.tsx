@@ -34,6 +34,8 @@ export function ModuleViewer({
 }: ModuleViewerProps) {
   const [currentSection, setCurrentSection] = useState(progress.currentSection || 0)
   const [videoPlaying, setVideoPlaying] = useState(false)
+  const [narrating, setNarrating] = useState(false)
+  const [slideIndex, setSlideIndex] = useState(0)
   const [sectionCompleted, setSectionCompleted] = useState(false)
 
   const section = module.content[currentSection]
@@ -41,14 +43,48 @@ export function ModuleViewer({
   const progressPercentage = Math.max(0, Math.min(100, Math.round(((currentSection + 1) / module.content.length) * 100)))
 
   useEffect(() => {
+    // Auto-complete sections without interaction or video after a short dwell
+    const needsInteraction = section?.type === 'interactive' && !!section?.interaction
+    const needsScenario = section?.type === 'scenario' && !!section?.interaction
+    const isVideo = section?.type === 'video'
+    if (!section) return
+    if (isVideo || needsInteraction || needsScenario) return
     const timer = setTimeout(() => {
-      if (section && !sectionCompleted) {
+      if (!sectionCompleted) {
         setSectionCompleted(true)
       }
     }, 5000)
-
     return () => clearTimeout(timer)
   }, [currentSection, section, sectionCompleted])
+
+  // Slide advance for slidecast-style "video" when no videoUrl provided
+  useEffect(() => {
+    if (section?.type !== 'video' || section.videoUrl || !videoPlaying) return
+    const totalSlides = section.bookmarks?.length || 0
+    if (totalSlides === 0) return
+    const interval = setInterval(() => {
+      setSlideIndex((i) => {
+        const next = i + 1
+        if (next >= totalSlides) {
+          clearInterval(interval)
+          setVideoPlaying(false)
+          setSectionCompleted(true)
+          return i
+        }
+        return next
+      })
+    }, 7000) // ~7s per slide to keep it short
+    return () => clearInterval(interval)
+  }, [section, videoPlaying])
+
+  // Stop narration on section change/unmount
+  useEffect(() => {
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel()
+      }
+    }
+  }, [])
 
   const handleNext = () => {
     if (isLastSection) {
@@ -77,34 +113,75 @@ export function ModuleViewer({
     toast.success('Bookmark added')
   }
 
+  const handleNarrate = () => {
+    if (!('speechSynthesis' in window) || !section?.transcript) {
+      toast.error('Narration unavailable')
+      return
+    }
+    if (narrating) {
+      window.speechSynthesis.cancel()
+      setNarrating(false)
+      return
+    }
+    const utter = new SpeechSynthesisUtterance(section.transcript)
+    utter.onend = () => setNarrating(false)
+    setNarrating(true)
+    window.speechSynthesis.speak(utter)
+  }
+
   const renderContent = (section: ContentSection) => {
     switch (section.type) {
       case 'video':
         return (
           <div className="space-y-4">
-            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20" />
-              <div className="relative z-10 text-center">
-                <Button
-                  size="lg"
-                  className="h-16 w-16 rounded-full"
-                  onClick={() => setVideoPlaying(!videoPlaying)}
-                >
-                  {videoPlaying ? (
-                    <Pause className="h-8 w-8" weight="fill" />
-                  ) : (
-                    <Play className="h-8 w-8" weight="fill" />
-                  )}
-                </Button>
-                <p className="text-sm text-muted-foreground mt-4">
-                  Video Player: {section.title}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Duration: {formatDuration(section.duration || 0)}
-                </p>
-              </div>
+            <div className="aspect-video bg-muted rounded-lg relative overflow-hidden">
+              {section.videoUrl ? (
+                <video
+                  src={section.videoUrl}
+                  controls
+                  className="w-full h-full object-cover"
+                  onEnded={() => setSectionCompleted(true)}
+                />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center p-6">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10" />
+                  <div className="relative z-10 w-full max-w-3xl text-center">
+                    <div className="flex items-center justify-center gap-3">
+                      <Button
+                        size="sm"
+                        className="rounded-full"
+                        onClick={() => setVideoPlaying(!videoPlaying)}
+                      >
+                        {videoPlaying ? (
+                          <>
+                            <Pause className="h-4 w-4" weight="fill" />
+                            <span className="ml-2">Pause</span>
+                          </>
+                        ) : (
+                          <>
+                            <Play className="h-4 w-4" weight="fill" />
+                            <span className="ml-2">Play</span>
+                          </>
+                        )}
+                      </Button>
+                      {section.transcript && (
+                        <Button variant="outline" size="sm" onClick={handleNarrate}>
+                          {narrating ? 'Stop narration' : 'Narrate transcript'}
+                        </Button>
+                      )}
+                    </div>
+                    <div className="mt-6 bg-card/80 border rounded-lg p-6 text-left">
+                      <p className="text-xs text-muted-foreground">Slide {Math.min((section.bookmarks?.length || 0), slideIndex + 1)} of {section.bookmarks?.length || 0}</p>
+                      <h4 className="font-semibold mt-1">{section.title}</h4>
+                      <p className="mt-3 text-sm leading-relaxed font-serif">
+                        {section.bookmarks?.[slideIndex]?.note || section.content}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-            
+
             {section.transcript && (
               <Card>
                 <CardHeader>
@@ -144,17 +221,24 @@ export function ModuleViewer({
               <p className="font-serif text-sm leading-relaxed">
                 {section.content}
               </p>
-              <div className="bg-accent/10 rounded-lg p-6 text-center">
-                <div className="inline-flex items-center justify-center rounded-full bg-accent/20 p-4 mb-4">
-                  <ListChecks className="h-8 w-8 text-accent-foreground" />
+              {section.interaction ? (
+                <InteractiveQuiz
+                  question={section.interaction.question}
+                  options={section.interaction.options}
+                  correctIndex={section.interaction.correctIndex}
+                  rationale={section.interaction.rationale}
+                  onPass={() => setSectionCompleted(true)}
+                />
+              ) : (
+                <div className="bg-accent/10 rounded-lg p-6 text-center">
+                  <div className="inline-flex items-center justify-center rounded-full bg-accent/20 p-4 mb-4">
+                    <ListChecks className="h-8 w-8 text-accent-foreground" />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Interactive scenario simulation will appear here
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Interactive scenario simulation will appear here
-                </p>
-                <Button className="mt-4" size="sm">
-                  Start Interactive Exercise
-                </Button>
-              </div>
+              )}
             </CardContent>
           </Card>
         )
@@ -170,12 +254,22 @@ export function ModuleViewer({
               <p className="font-serif text-sm leading-relaxed">
                 {section.content}
               </p>
-              <div className="bg-secondary/10 rounded-lg p-6">
-                <h4 className="font-semibold mb-2">Your Task</h4>
-                <p className="text-sm text-muted-foreground">
-                  Analyze the scenario and determine the appropriate regulatory approach based on the guidelines you've learned.
-                </p>
-              </div>
+              {section.interaction ? (
+                <InteractiveQuiz
+                  question={section.interaction.question}
+                  options={section.interaction.options}
+                  correctIndex={section.interaction.correctIndex}
+                  rationale={section.interaction.rationale}
+                  onPass={() => setSectionCompleted(true)}
+                />
+              ) : (
+                <div className="bg-secondary/10 rounded-lg p-6">
+                  <h4 className="font-semibold mb-2">Your Task</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Analyze the scenario and determine the appropriate regulatory approach based on the guidelines you've learned.
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         )
@@ -327,6 +421,80 @@ export function ModuleViewer({
             </div>
           </CardContent>
         </Card>
+        {module.regulatoryReferences?.length ? (
+          <Card className="mt-4">
+            <CardHeader>
+              <CardTitle className="text-base">Citations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="text-sm list-disc pl-5 space-y-1">
+                {module.regulatoryReferences.map((ref, i) => (
+                  <li key={i}>
+                    <a href={ref.url} target="_blank" rel="noreferrer" className="underline">
+                      {ref.authority}: {ref.document} ({ref.section})
+                    </a>
+                    <span className="text-muted-foreground ml-2">Effective: {ref.effectiveDate}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        ) : null}
+      </div>
+    </div>
+  )
+}
+
+function InteractiveQuiz({
+  question,
+  options,
+  correctIndex,
+  rationale,
+  onPass
+}: {
+  question: string
+  options: string[]
+  correctIndex: number
+  rationale: string
+  onPass: () => void
+}) {
+  const [selected, setSelected] = useState<number | null>(null)
+  const [submitted, setSubmitted] = useState(false)
+  const correct = submitted && selected === correctIndex
+
+  return (
+    <div className="bg-background border rounded-lg p-4">
+      <p className="font-medium mb-3">{question}</p>
+      <div className="space-y-2">
+        {options.map((opt, idx) => (
+          <label key={idx} className={`flex items-center gap-3 p-2 rounded border cursor-pointer ${selected === idx ? 'border-primary' : 'border-muted'}`}>
+            <input
+              type="radio"
+              name="interactive"
+              checked={selected === idx}
+              onChange={() => setSelected(idx)}
+            />
+            <span className="text-sm">{opt}</span>
+          </label>
+        ))}
+      </div>
+      <div className="flex items-center gap-3 mt-4">
+        <Button size="sm" onClick={() => {
+          setSubmitted(true)
+          if (selected === correctIndex) {
+            toast.success('Correct!')
+            onPass()
+          } else {
+            toast.error('Not quite—review the rationale and try again')
+          }
+        }} disabled={selected === null}>
+          Submit
+        </Button>
+        {submitted && (
+          <span className={`text-sm ${correct ? 'text-secondary' : 'text-accent'}`}>
+            {correct ? 'Correct' : 'Incorrect'} — {rationale}
+          </span>
+        )}
       </div>
     </div>
   )

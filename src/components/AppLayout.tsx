@@ -7,7 +7,8 @@ import {
   ListChecks,
   Gear,
   Robot,
-  List
+  List,
+  BookBookmark
 } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -38,6 +39,7 @@ export function AppLayout({
   const navigation = [
     { id: 'dashboard', label: 'Dashboard', icon: House },
     { id: 'learning', label: 'My Learning', icon: BookOpen },
+    { id: 'glossary', label: 'Glossary', icon: BookBookmark },
     { id: 'assessments', label: 'Assessments', icon: ListChecks },
     { id: 'analytics', label: 'Analytics', icon: ChartBar },
     { id: 'certifications', label: 'Certifications', icon: Certificate },

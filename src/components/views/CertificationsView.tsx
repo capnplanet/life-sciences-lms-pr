@@ -9,21 +9,28 @@ import {
   Calendar
 } from '@phosphor-icons/react'
 import type { Certification } from '@/lib/types'
+import { downloadCertificateSVG } from '@/lib/certificates'
 import { formatDate, getDaysUntil, isExpiringSoon, isExpired } from '@/lib/helpers'
 import { toast } from 'sonner'
 
 interface CertificationsViewProps {
   certifications: Certification[]
   onNavigate: (view: string, moduleId?: string) => void
+  userName?: string
 }
 
-export function CertificationsView({ certifications, onNavigate }: CertificationsViewProps) {
+export function CertificationsView({ certifications, onNavigate, userName = 'Learner' }: CertificationsViewProps) {
   const activeCerts = certifications.filter(c => c.status === 'active')
   const expiredCerts = certifications.filter(c => c.status === 'expired')
   const expiringSoon = activeCerts.filter(c => isExpiringSoon(c.expiryDate, 60))
 
   const handleDownload = (cert: Certification) => {
-    toast.success('Certificate download started')
+    try {
+      downloadCertificateSVG(cert, userName)
+      toast.success('Certificate download started')
+    } catch (e) {
+      toast.error('Unable to generate certificate')
+    }
   }
 
   const handleVerify = (cert: Certification) => {

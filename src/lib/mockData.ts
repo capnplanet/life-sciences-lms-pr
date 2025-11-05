@@ -23,10 +23,15 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-001',
         type: 'video',
         title: 'Fundamentals of GCP',
-        content: 'Overview of ethical and scientific quality standards for designing, conducting, recording, and reporting clinical trials that involve human subjects. Emphasis on subject rights, safety, well-being, and data integrity.',
-        videoUrl: 'https://example.com/gcp-intro.mp4',
+        content: 'Overview of ethical and scientific quality standards for clinical trials that involve human subjects. Emphasis on subject rights, safety, well-being, data integrity, and proportional, risk-based quality management.',
         duration: 45,
-        transcript: 'Good Clinical Practice (GCP) is an international ethical and scientific quality standard for designing, conducting, recording, and reporting trials that involve the participation of human subjects. Compliance with GCP provides public assurance that the rights, safety, and well-being of trial subjects are protected and that the clinical trial data are credible. Key principles include informed consent, independent ethics review, investigator qualifications, protocol adherence, robust monitoring, essential documentation, and quality systems. ICH E6(R2) modernizes GCP by emphasizing risk-based quality management, computer system validation, and data integrity.'
+        transcript: 'Good Clinical Practice (GCP) is the international ethical and scientific quality standard for designing, conducting, recording, and reporting trials involving human subjects. Compliance with GCP assures that the rights, safety, and well‑being of trial participants are protected and that clinical trial data are credible. Core principles include informed consent and subject privacy, IRB/IEC oversight, scientifically sound protocols, qualified personnel, adequate resources, ongoing monitoring, accurate and contemporaneous records, and robust quality systems. ICH E6(R2) strengthens expectations around risk‑based quality management, vendor oversight, and data integrity, while the E6(R3) concept papers emphasize proportionality and critical‑to‑quality factors.',
+        bookmarks: [
+          { id: 'bm-001', timestamp: 0, note: 'What is GCP: ethical and scientific standard protecting subjects and ensuring credible data.' , createdAt: new Date().toISOString() },
+          { id: 'bm-002', timestamp: 10, note: 'Core principles: informed consent, IRB/IEC, protocol adherence, monitoring, documentation.' , createdAt: new Date().toISOString() },
+          { id: 'bm-003', timestamp: 20, note: 'Data integrity and ALCOA+: attributable, legible, contemporaneous, original, accurate (+ complete/consistent/enduring/available).', createdAt: new Date().toISOString() },
+          { id: 'bm-004', timestamp: 30, note: 'Risk‑based quality management and vendor oversight per ICH E6(R2)/(R3) direction.', createdAt: new Date().toISOString() }
+        ]
       },
       {
         id: 'sec-002',
@@ -39,8 +44,19 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-003',
         type: 'interactive',
         title: 'Ethical Principles Scenario',
-        content: 'Interactive case studies applying the Belmont Report principles (Respect for Persons, Beneficence, and Justice) and ICH-GCP requirements to informed consent, subject privacy, vulnerable populations, and safety reporting decisions.',
-        duration: 45
+        content: 'Apply Belmont Report principles (Respect for Persons, Beneficence, Justice) and ICH‑GCP to a vulnerable population consent scenario.',
+        duration: 45,
+        interaction: {
+          question: 'A non‑English‑speaking subject is being enrolled in an emergency setting. What is the most compliant approach to consent?',
+          options: [
+            'Proceed with verbal consent only to avoid delays',
+            'Use a short‑form consent with a qualified interpreter and impartial witness',
+            'Enroll without consent due to emergency and document later',
+            'Ask a family member to translate and sign on behalf of the subject'
+          ],
+          correctIndex: 1,
+          rationale: 'ICH‑GCP and ethical norms allow short‑form consent when a full translation is unavailable, provided a qualified interpreter and impartial witness are used, and full consent is obtained as soon as feasible.'
+        }
       }
     ],
     assessments: [
@@ -81,9 +97,15 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-004',
         type: 'video',
         title: 'Introduction to Pharmacovigilance',
-        content: 'Pharmacovigilance (PV) encompasses the science and activities relating to the detection, assessment, understanding, and prevention of adverse effects or any other medicine-related problems. Covers GPVP foundations, product safety profiles, data sources (spontaneous reports, literature, clinical, real-world), and signal detection basics.',
-        videoUrl: 'https://example.com/pv-intro.mp4',
-        duration: 50
+  content: 'Pharmacovigilance (PV) is the science and activities for detecting, assessing, understanding, and preventing adverse effects or other medicine‑related problems. This module covers GPVP foundations, safety data sources, and signal detection basics.',
+  duration: 50,
+        transcript: 'Pharmacovigilance ensures that the benefit‑risk profile of medicinal products remains positive throughout their lifecycle. Core processes include intake and processing of individual case safety reports, medical coding (MedDRA), causality and seriousness assessment, expedited and periodic reporting, and signal management. Data sources include spontaneous reports, literature, studies and registries, EHR/claims, and social media (with caution). Signal detection combines quantitative methods with medical judgment per GVP Module IX.',
+        bookmarks: [
+          { id: 'bm-101', timestamp: 0, note: 'PV purpose: maintain positive benefit‑risk across the product lifecycle.', createdAt: new Date().toISOString() },
+          { id: 'bm-102', timestamp: 12, note: 'ICSR processing: case intake → coding → assessment → reporting obligations.', createdAt: new Date().toISOString() },
+          { id: 'bm-103', timestamp: 24, note: 'Data sources: spontaneous, literature, clinical, real‑world (EHR/claims).', createdAt: new Date().toISOString() },
+          { id: 'bm-104', timestamp: 36, note: 'Signal detection: disproportionality + clinical review per GVP IX.', createdAt: new Date().toISOString() }
+        ]
       },
       {
         id: 'sec-005',
@@ -96,8 +118,19 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-006',
         type: 'scenario',
         title: 'Signal Detection Case Study',
-        content: 'Hands-on exercise performing disproportionality analysis and qualitative review to identify potential safety signals, triage, validation, and assessment per GPVP Module IX. Practice drafting signal management documentation and regulatory communication summaries.',
-        duration: 70
+        content: 'Perform initial signal triage after an increase in hepatic adverse events in spontaneous reports. Consider thresholds, confounders, and next steps per GVP IX.',
+        duration: 70,
+        interaction: {
+          question: 'Your team observes a disproportionality signal for hepatic events. What is the next best step?',
+          options: [
+            'Immediately update the label with a boxed warning',
+            'Validate the signal with case review and clinical plausibility assessment',
+            'Close the signal because spontaneous data are unreliable',
+            'Report all historical cases as expedited SUSARs'
+          ],
+          correctIndex: 1,
+          rationale: 'GVP Module IX recommends validation via medical review, clinical plausibility, and additional analyses before determining regulatory actions.'
+        }
       }
     ],
     assessments: [
@@ -140,8 +173,14 @@ export const MOCK_MODULES: LearningModule[] = [
         type: 'video',
         title: 'GMP Quality Systems',
         content: 'Overview of quality management systems in pharmaceutical manufacturing: Quality Manual, Management Responsibility, Change Control, Deviation/CAPA, Internal Audits, Supplier Qualification, Training, and Validation. Aligns with ICH Q10 and 21 CFR Parts 210/211.',
-        videoUrl: 'https://example.com/gmp-quality.mp4',
-        duration: 55
+        duration: 55,
+        transcript: 'GMP quality systems aim to consistently produce medicinal products that meet specifications and patient needs. Key elements include management responsibility and quality planning, robust procedures and records, training and qualification, controlled change management, deviation investigation and effective CAPA, internal audits, and supplier oversight. Alignment with ICH Q10 links these elements for continual improvement within a pharmaceutical quality system.',
+        bookmarks: [
+          { id: 'bm-201', timestamp: 0, note: 'GMP objective and link to patient safety and product quality.', createdAt: new Date().toISOString() },
+          { id: 'bm-202', timestamp: 14, note: 'Quality System elements: SOPs, records, training, change control.', createdAt: new Date().toISOString() },
+          { id: 'bm-203', timestamp: 28, note: 'Deviation/CAPA lifecycle and effectiveness checks.', createdAt: new Date().toISOString() },
+          { id: 'bm-204', timestamp: 42, note: 'Supplier qualification and internal audits to ensure control.', createdAt: new Date().toISOString() }
+        ]
       },
       {
         id: 'sec-008',
@@ -154,8 +193,19 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-009',
         type: 'interactive',
         title: 'Deviation Management Simulation',
-        content: 'Interactive simulation of deviation investigation using 5-Whys/Fishbone, impact assessment, product disposition, and CAPA effectiveness verification. Includes change control linkage and trending for continual improvement.',
-        duration: 80
+        content: 'Investigate a deviation using 5‑Whys and determine an effective CAPA that addresses root cause, with appropriate effectiveness checks.',
+        duration: 80,
+        interaction: {
+          question: 'A recurring equipment failure is traced to inadequate preventive maintenance frequency. What is the best CAPA?',
+          options: [
+            'Retrain operators on equipment cleaning',
+            'Increase maintenance frequency and update the PM SOP with effectiveness checks',
+            'Add a new sign‑off field in the batch record',
+            'Quarantine all batches for one month'
+          ],
+          correctIndex: 1,
+          rationale: 'Addressing root cause requires adjusting the PM schedule and SOP, with documented effectiveness verification, rather than unrelated retraining or cosmetic controls.'
+        }
       }
     ],
     assessments: [
@@ -198,8 +248,13 @@ export const MOCK_MODULES: LearningModule[] = [
         type: 'video',
         title: 'Global Regulatory Landscape',
         content: 'Orientation to global agencies (FDA, EMA, PMDA, MHRA, Health Canada) and harmonization via ICH. Discusses pathways (IND/CTA, NDA/BLA, MAA), expedited programs (Breakthrough, PRIME), and labeling/CMC alignment challenges in multi-region submissions.',
-        videoUrl: 'https://example.com/reg-landscape.mp4',
-        duration: 70
+        duration: 70,
+        transcript: 'Global regulatory strategy balances scientific evidence with varied regional expectations. Sponsors engage with agencies through scientific advice, Type B/C meetings, and parallel consultations. Harmonization via ICH supports CTD/eCTD structures, but regional Module 1 requirements differ. Expedited programs like Breakthrough Therapy (FDA) and PRIME (EMA) can accelerate development where criteria are met.',
+        bookmarks: [
+          { id: 'bm-301', timestamp: 0, note: 'Agencies and harmonization: FDA, EMA, PMDA, MHRA, Health Canada; role of ICH.', createdAt: new Date().toISOString() },
+          { id: 'bm-302', timestamp: 18, note: 'Regulatory pathways: IND/CTA → NDA/BLA/MAA; scientific advice and meetings.', createdAt: new Date().toISOString() },
+          { id: 'bm-303', timestamp: 36, note: 'Expedited programs and criteria (Breakthrough, PRIME).', createdAt: new Date().toISOString() }
+        ]
       },
       {
         id: 'sec-011',
@@ -249,15 +304,31 @@ export const MOCK_MODULES: LearningModule[] = [
         type: 'video',
         title: 'QA Principles and Frameworks',
         content: 'Foundation of QA in clinical research: SOP governance, audit program design (risk-based), vendor oversight, TMF quality, data integrity, and issue management. Aligns with ICH E6(R2), ISO 9001 principles, and EMA/MHRA expectations.',
-        videoUrl: 'https://example.com/qa-principles.mp4',
-        duration: 60
+        duration: 60,
+        transcript: 'Quality assurance provides confidence that clinical research is conducted, and data are generated, in accordance with applicable standards. A risk‑based QA program covers SOP governance, qualified auditors, independence, a risk‑driven audit plan, TMF and data integrity checks, issue management, and vendor oversight. Outputs drive CAPA and continual improvement.',
+        bookmarks: [
+          { id: 'bm-401', timestamp: 0, note: 'Role of QA: confidence via independent oversight and continuous improvement.', createdAt: new Date().toISOString() },
+          { id: 'bm-402', timestamp: 15, note: 'Risk‑based audit program and vendor oversight.', createdAt: new Date().toISOString() },
+          { id: 'bm-403', timestamp: 30, note: 'TMF quality and data integrity checks.', createdAt: new Date().toISOString() }
+        ]
       },
       {
         id: 'sec-013',
         type: 'interactive',
         title: 'Audit Planning Exercise',
-        content: 'Plan and execute a mock clinical study site/vendor audit: scope, agenda, sampling strategy, interview techniques, evidence collection, classification of findings (Critical/Major/Minor), and CAPA follow-up. Includes mock audit report drafting.',
-        duration: 90
+        content: 'Plan and execute a site/vendor audit including scope, sampling strategy, evidence collection, classification of findings, and CAPA follow‑up.',
+        duration: 90,
+        interaction: {
+          question: 'During an audit you observe missing signatures on several source documents with no impact to data integrity. What is the most appropriate classification?',
+          options: [
+            'Critical',
+            'Major',
+            'Minor',
+            'Opportunity for Improvement only'
+          ],
+          correctIndex: 2,
+          rationale: 'Missing signatures without data integrity impact typically constitute a Minor finding; however, trending may elevate significance if systemic.'
+        }
       }
     ],
     assessments: [

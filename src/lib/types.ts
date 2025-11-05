@@ -66,6 +66,14 @@ export interface ContentSection {
   transcript?: string
   bookmarks?: Bookmark[]
   completed?: boolean
+  interaction?: InteractionDef
+}
+
+export interface InteractionDef {
+  question: string
+  options: string[]
+  correctIndex: number
+  rationale: string
 }
 
 export interface Assessment {
