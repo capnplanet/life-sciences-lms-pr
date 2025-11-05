@@ -194,9 +194,9 @@ export function LearningView({ modules, progress, onNavigate }: LearningViewProp
 
                 {moduleProgress && status === 'in-progress' && (
                   <div className="space-y-1">
-                    <Progress value={moduleProgress.progress} className="h-2" />
+                    <Progress value={Math.max(0, Math.min(100, moduleProgress.progress))} className="h-2" />
                     <p className="text-xs text-muted-foreground">
-                      {moduleProgress.progress}% complete
+                      {Math.max(0, Math.min(100, moduleProgress.progress))}% complete
                     </p>
                   </div>
                 )}
