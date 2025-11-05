@@ -48,6 +48,7 @@ export function AppLayout({
   const adminNavigation = [
     { id: 'content-management', label: 'Content Management', icon: Gear },
     { id: 'ai-content', label: 'AI Content Review', icon: Robot },
+    { id: 'ai-health', label: 'AI Health', icon: ChartBar },
   ]
 
   const handleNavigation = (id: string) => {

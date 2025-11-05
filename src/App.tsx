@@ -10,9 +10,10 @@ import { AnalyticsView } from '@/components/views/AnalyticsView'
 import { CertificationsView } from '@/components/views/CertificationsView'
 import { ContentManagementView } from '@/components/views/ContentManagementView'
 import { AIContentReviewView } from '@/components/views/AIContentReviewView'
+import { AIHealthView } from './components/views/AIHealthView'
 import { AssessmentsView } from '@/components/views/AssessmentsView'
 import { GlossaryView } from '@/components/views/GlossaryView'
-import type { UserProgress, Certification, AssessmentResult } from '@/lib/types'
+import type { UserProgress, Certification, AssessmentResult, DraftContent } from '@/lib/types'
 import { 
   MOCK_MODULES, 
   MOCK_USER_PROGRESS, 
@@ -35,12 +36,14 @@ function App() {
 
   const [userProgress, setUserProgress] = useKV<UserProgress[]>('user-progress', MOCK_USER_PROGRESS)
   const [certifications, setCertifications] = useKV<Certification[]>('certifications', MOCK_CERTIFICATIONS)
+  const [draftContent, setDraftContent] = useKV<DraftContent[]>('draft-content', MOCK_DRAFT_CONTENT)
 
   const userRole = 'admin'
   const userName = 'Current User'
 
   const safeUserProgress = userProgress || []
   const safeCertifications = certifications || []
+  const safeDrafts = draftContent || []
 
   const handleNavigate = (view: string, moduleId?: string) => {
     setCurrentView(view)
@@ -134,6 +137,43 @@ function App() {
     }
 
     setAssessmentMode(null)
+  }
+
+  // AI content review handlers
+  const handleDraftApprove = (draftId: string, reviewComment?: string) => {
+    setDraftContent((current) => {
+      const drafts = (current || []) as DraftContent[]
+      return drafts.map(d => d.id === draftId ? {
+        ...d,
+        status: 'approved',
+        reviewedBy: 'admin-001',
+        reviewedAt: new Date().toISOString(),
+        comments: reviewComment ? [...(d.comments || []), reviewComment] : d.comments
+      } : d)
+    })
+  }
+  const handleDraftReject = (draftId: string, reviewComment: string) => {
+    setDraftContent((current) => {
+      const drafts = (current || []) as DraftContent[]
+      return drafts.map(d => d.id === draftId ? {
+        ...d,
+        status: 'archived',
+        comments: reviewComment ? [...(d.comments || []), `Rejected: ${reviewComment}`] : d.comments
+      } : d)
+    })
+  }
+  const handleDraftRequestRevision = (draftId: string, reviewComment: string) => {
+    setDraftContent((current) => {
+      const drafts = (current || []) as DraftContent[]
+      return drafts.map(d => d.id === draftId ? {
+        ...d,
+        status: 'pending-review',
+        comments: reviewComment ? [...(d.comments || []), `Revision requested: ${reviewComment}`] : d.comments
+      } : d)
+    })
+  }
+  const handleProposeDraft = (draft: DraftContent) => {
+    setDraftContent((current) => ([...(current || [] as DraftContent[]), draft]))
   }
 
   const renderView = () => {
@@ -240,8 +280,17 @@ function App() {
       case 'ai-content':
         return (
           <AIContentReviewView
-            draftContent={MOCK_DRAFT_CONTENT}
+            draftContent={safeDrafts}
+            modulesLite={MOCK_MODULES.map(m => ({ id: m.id, domain: m.domain }))}
+            onApprove={handleDraftApprove}
+            onReject={handleDraftReject}
+            onRequestRevision={handleDraftRequestRevision}
+            onProposeDraft={handleProposeDraft}
           />
+        )
+      case 'ai-health':
+        return (
+          <AIHealthView />
         )
 
       default:

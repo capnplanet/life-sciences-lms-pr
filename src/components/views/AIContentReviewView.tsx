@@ -13,22 +13,39 @@ import {
   GitBranch
 } from '@phosphor-icons/react'
 import type { DraftContent } from '@/lib/types'
+import { evaluateGuardrails } from '@/lib/ai/guardrails'
+import { startRegwatchPolling } from '@/lib/ai/regwatch'
 import { formatDate, REGULATORY_AUTHORITIES } from '@/lib/helpers'
 import { toast } from 'sonner'
 
 interface AIContentReviewProps {
   draftContent: DraftContent[]
+  modulesLite: { id: string; domain: string }[]
+  onApprove: (draftId: string, reviewComment?: string) => void
+  onReject: (draftId: string, reviewComment: string) => void
+  onRequestRevision: (draftId: string, reviewComment: string) => void
+  onProposeDraft: (draft: DraftContent) => void
 }
 
-export function AIContentReviewView({ draftContent }: AIContentReviewProps) {
+export function AIContentReviewView({ draftContent, modulesLite, onApprove, onReject, onRequestRevision, onProposeDraft }: AIContentReviewProps) {
   const [selectedDraft, setSelectedDraft] = useState<string | null>(null)
   const [reviewComment, setReviewComment] = useState('')
+  const [polling, setPolling] = useState(false)
 
   const pendingDrafts = draftContent.filter(d => d.status === 'pending-review')
   const approvedDrafts = draftContent.filter(d => d.status === 'approved')
   const draft = draftContent.find(d => d.id === selectedDraft)
 
   const handleApprove = (draftId: string) => {
+    const draft = draftContent.find(d => d.id === draftId)
+    if (draft) {
+      const report = evaluateGuardrails(draft)
+      if (report.blockApprove) {
+        toast.error('Approval blocked by guardrails')
+        return
+      }
+    }
+    onApprove(draftId, reviewComment)
     toast.success('Content approved and queued for deployment')
     setSelectedDraft(null)
     setReviewComment('')
@@ -39,6 +56,7 @@ export function AIContentReviewView({ draftContent }: AIContentReviewProps) {
       toast.error('Please provide feedback for rejection')
       return
     }
+    onReject(draftId, reviewComment)
     toast.error('Content rejected with feedback sent to AI system')
     setSelectedDraft(null)
     setReviewComment('')
@@ -49,10 +67,26 @@ export function AIContentReviewView({ draftContent }: AIContentReviewProps) {
       toast.error('Please provide revision requirements')
       return
     }
+    onRequestRevision(draftId, reviewComment)
     toast.success('Revision requested. AI will generate updated draft.')
     setSelectedDraft(null)
     setReviewComment('')
   }
+
+  // Real-time proposals (simulated polling). Toggle with button.
+  const togglePolling = () => {
+    if (polling) {
+      setPolling(false)
+      stop?.()
+      toast.success('Stopped real-time proposals')
+    } else {
+      setPolling(true)
+      stop = startRegwatchPolling(modulesLite, (draft) => onProposeDraft(draft), 20000)
+      toast.success('Real-time proposals enabled')
+    }
+  }
+
+  let stop: null | (() => void) = null
 
   return (
     <div className="p-6 space-y-6">
@@ -68,6 +102,9 @@ export function AIContentReviewView({ draftContent }: AIContentReviewProps) {
           <span className="text-sm text-muted-foreground">
             {pendingDrafts.length} pending review
           </span>
+          <Button size="sm" variant={polling ? 'secondary' : 'outline'} onClick={togglePolling} className="ml-2">
+            {polling ? 'Pause Proposals' : 'Start Proposals'}
+          </Button>
         </div>
       </div>
 
@@ -194,6 +231,22 @@ export function AIContentReviewView({ draftContent }: AIContentReviewProps) {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
+                    {/* Guardrails report */}
+                    {(() => { 
+                      const report = evaluateGuardrails(draft)
+                      return (
+                        <div className={`rounded-lg p-3 ${report.ok ? 'bg-secondary/10 border border-secondary/30' : 'bg-accent/10 border border-accent/30'}`}>
+                          <div className="text-sm font-medium mb-2">Guardrails</div>
+                          <ul className="text-xs space-y-1">
+                            {report.issues.map((i, idx) => (
+                              <li key={idx} className={i.severity === 'error' ? 'text-accent' : 'text-muted-foreground'}>
+                                • {i.message}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                    })()}
                     <div>
                       <h4 className="font-semibold text-sm mb-2">Regulatory Trigger</h4>
                       <div className="bg-muted/50 rounded-lg p-3 space-y-2 text-sm">
