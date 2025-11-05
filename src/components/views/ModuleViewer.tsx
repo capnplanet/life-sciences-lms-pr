@@ -38,7 +38,7 @@ export function ModuleViewer({
 
   const section = module.content[currentSection]
   const isLastSection = currentSection === module.content.length - 1
-  const progressPercentage = Math.round(((currentSection + 1) / module.content.length) * 100)
+  const progressPercentage = Math.max(0, Math.min(100, Math.round(((currentSection + 1) / module.content.length) * 100)))
 
   useEffect(() => {
     const timer = setTimeout(() => {

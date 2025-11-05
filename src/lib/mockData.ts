@@ -23,23 +23,23 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-001',
         type: 'video',
         title: 'Fundamentals of GCP',
-        content: 'Introduction to ethical and scientific quality standards for clinical trials',
+        content: 'Overview of ethical and scientific quality standards for designing, conducting, recording, and reporting clinical trials that involve human subjects. Emphasis on subject rights, safety, well-being, and data integrity.',
         videoUrl: 'https://example.com/gcp-intro.mp4',
         duration: 45,
-        transcript: 'Good Clinical Practice (GCP) is an international ethical and scientific quality standard...'
+        transcript: 'Good Clinical Practice (GCP) is an international ethical and scientific quality standard for designing, conducting, recording, and reporting trials that involve the participation of human subjects. Compliance with GCP provides public assurance that the rights, safety, and well-being of trial subjects are protected and that the clinical trial data are credible. Key principles include informed consent, independent ethics review, investigator qualifications, protocol adherence, robust monitoring, essential documentation, and quality systems. ICH E6(R2) modernizes GCP by emphasizing risk-based quality management, computer system validation, and data integrity.'
       },
       {
         id: 'sec-002',
         type: 'text',
         title: 'ICH-GCP Guidelines Overview',
-        content: 'The International Council for Harmonisation (ICH) GCP guideline provides a unified standard for designing, conducting, recording, and reporting trials...',
+        content: 'The International Council for Harmonisation (ICH) E6(R2) guideline provides a unified standard for designing, conducting, recording, and reporting clinical trials. Core sections cover investigator and sponsor responsibilities, essential documents, protocol and investigator brochure requirements, safety reporting, and trial monitoring. E6(R2) adds expectations for risk-based monitoring (RBM), quality tolerance limits, and sponsor oversight of vendor systems. Upcoming E6(R3) drafts further emphasize proportionality, critical-to-quality factors, and modern digital technologies.',
         duration: 30
       },
       {
         id: 'sec-003',
         type: 'interactive',
         title: 'Ethical Principles Scenario',
-        content: 'Interactive case studies applying ethical principles to real-world situations',
+        content: 'Interactive case studies applying the Belmont Report principles (Respect for Persons, Beneficence, and Justice) and ICH-GCP requirements to informed consent, subject privacy, vulnerable populations, and safety reporting decisions.',
         duration: 45
       }
     ],
@@ -81,7 +81,7 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-004',
         type: 'video',
         title: 'Introduction to Pharmacovigilance',
-        content: 'Understanding the science and activities relating to detection, assessment, and prevention of adverse effects',
+        content: 'Pharmacovigilance (PV) encompasses the science and activities relating to the detection, assessment, understanding, and prevention of adverse effects or any other medicine-related problems. Covers GPVP foundations, product safety profiles, data sources (spontaneous reports, literature, clinical, real-world), and signal detection basics.',
         videoUrl: 'https://example.com/pv-intro.mp4',
         duration: 50
       },
@@ -89,14 +89,14 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-005',
         type: 'text',
         title: 'Adverse Event Reporting Requirements',
-        content: 'Comprehensive guide to AE reporting timelines, formats, and regulatory expectations across jurisdictions...',
+        content: 'Covers AE and ADR definitions, seriousness and expectedness assessments, and expedited reporting timelines: SUSARs (7/15-day rules), device-drug considerations, follow-up information, and periodic reports (PSUR/PBRER). Includes E2A/E2D/MedDRA coding practices, EMA EudraVigilance submission, FDA FAERS/VAERS, and MHRA Yellow Card. Emphasizes case processing workflow, data quality, causality, duplicate detection, and compliance metrics.',
         duration: 60
       },
       {
         id: 'sec-006',
         type: 'scenario',
         title: 'Signal Detection Case Study',
-        content: 'Analyze real-world data to identify potential safety signals',
+        content: 'Hands-on exercise performing disproportionality analysis and qualitative review to identify potential safety signals, triage, validation, and assessment per GPVP Module IX. Practice drafting signal management documentation and regulatory communication summaries.',
         duration: 70
       }
     ],
@@ -139,7 +139,7 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-007',
         type: 'video',
         title: 'GMP Quality Systems',
-        content: 'Overview of quality management systems in pharmaceutical manufacturing',
+        content: 'Overview of quality management systems in pharmaceutical manufacturing: Quality Manual, Management Responsibility, Change Control, Deviation/CAPA, Internal Audits, Supplier Qualification, Training, and Validation. Aligns with ICH Q10 and 21 CFR Parts 210/211.',
         videoUrl: 'https://example.com/gmp-quality.mp4',
         duration: 55
       },
@@ -147,14 +147,14 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-008',
         type: 'text',
         title: 'Documentation and Record Keeping',
-        content: 'Requirements for batch records, SOPs, and maintaining 21 CFR Part 11 compliant documentation...',
+        content: 'Requirements for GDP (Good Documentation Practices), batch records, master records, and SOPs, with ALCOA+ principles (Attributable, Legible, Contemporaneous, Original, Accurate, Complete, Consistent, Enduring, Available). Includes 21 CFR Part 11 expectations for electronic records/signatures: audit trails, user access controls, validation, and record retention.',
         duration: 65
       },
       {
         id: 'sec-009',
         type: 'interactive',
         title: 'Deviation Management Simulation',
-        content: 'Interactive simulation of investigating and resolving manufacturing deviations',
+        content: 'Interactive simulation of deviation investigation using 5-Whys/Fishbone, impact assessment, product disposition, and CAPA effectiveness verification. Includes change control linkage and trending for continual improvement.',
         duration: 80
       }
     ],
@@ -197,7 +197,7 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-010',
         type: 'video',
         title: 'Global Regulatory Landscape',
-        content: 'Understanding regulatory requirements across FDA, EMA, Health Canada, PMDA, and MHRA',
+        content: 'Orientation to global agencies (FDA, EMA, PMDA, MHRA, Health Canada) and harmonization via ICH. Discusses pathways (IND/CTA, NDA/BLA, MAA), expedited programs (Breakthrough, PRIME), and labeling/CMC alignment challenges in multi-region submissions.',
         videoUrl: 'https://example.com/reg-landscape.mp4',
         duration: 70
       },
@@ -205,7 +205,7 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-011',
         type: 'text',
         title: 'Submission Strategy Development',
-        content: 'Developing comprehensive regulatory strategies for NDAs, MAAs, and BLAs...',
+        content: 'End-to-end submission strategy including target product profile (TPP), regulatory intelligence, meeting packages (Type B/C, Scientific Advice), CTD/eCTD structure (M1–M5), and readiness (gap assessments, pre-approval inspections). Incorporates risk management plans (RMP), pediatric plans (PIP), and post-marketing commitments.',
         duration: 90
       }
     ],
@@ -248,7 +248,7 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-012',
         type: 'video',
         title: 'QA Principles and Frameworks',
-        content: 'Foundation of quality assurance in clinical research environments',
+        content: 'Foundation of QA in clinical research: SOP governance, audit program design (risk-based), vendor oversight, TMF quality, data integrity, and issue management. Aligns with ICH E6(R2), ISO 9001 principles, and EMA/MHRA expectations.',
         videoUrl: 'https://example.com/qa-principles.mp4',
         duration: 60
       },
@@ -256,7 +256,7 @@ export const MOCK_MODULES: LearningModule[] = [
         id: 'sec-013',
         type: 'interactive',
         title: 'Audit Planning Exercise',
-        content: 'Plan and execute a mock clinical trial audit',
+        content: 'Plan and execute a mock clinical study site/vendor audit: scope, agenda, sampling strategy, interview techniques, evidence collection, classification of findings (Critical/Major/Minor), and CAPA follow-up. Includes mock audit report drafting.',
         duration: 90
       }
     ],

@@ -10,6 +10,7 @@ import { AnalyticsView } from '@/components/views/AnalyticsView'
 import { CertificationsView } from '@/components/views/CertificationsView'
 import { ContentManagementView } from '@/components/views/ContentManagementView'
 import { AIContentReviewView } from '@/components/views/AIContentReviewView'
+import { AssessmentsView } from '@/components/views/AssessmentsView'
 import type { UserProgress, Certification, AssessmentResult } from '@/lib/types'
 import { 
   MOCK_MODULES, 
@@ -199,10 +200,10 @@ function App() {
 
       case 'assessments':
         return (
-          <LearningView
+          <AssessmentsView
             modules={MOCK_MODULES}
             progress={safeUserProgress}
-            onNavigate={handleNavigate}
+            onStartAssessment={handleStartAssessment}
           />
         )
 

@@ -120,7 +120,8 @@ export function AssessmentView({
 
   const questions = SAMPLE_QUESTIONS.slice(0, assessment.adaptive ? 5 : 3)
   const question = questions[currentQuestion]
-  const progress = ((currentQuestion) / questions.length) * 100
+  const rawProgress = ((currentQuestion) / questions.length) * 100
+  const progress = Math.max(0, Math.min(100, rawProgress))
 
   useEffect(() => {
     const timer = setInterval(() => {

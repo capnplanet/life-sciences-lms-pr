@@ -8,6 +8,8 @@ function Progress({
   value,
   ...props
 }: ComponentProps<typeof ProgressPrimitive.Root>) {
+  const numeric = typeof value === 'number' ? value : Number(value ?? 0)
+  const clamped = Math.max(0, Math.min(100, isNaN(numeric) ? 0 : numeric))
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
@@ -20,7 +22,7 @@ function Progress({
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
         className="bg-primary h-full w-full flex-1 transition-all"
-        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+        style={{ transform: `translateX(-${100 - clamped}%)` }}
       />
     </ProgressPrimitive.Root>
   )

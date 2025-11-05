@@ -157,6 +157,7 @@ export function DashboardView({ modules, progress, certifications, onNavigate }:
               const module = modules.find(m => m.id === progressItem.moduleId)
               if (!module) return null
 
+              const pct = Math.max(0, Math.min(100, progressItem.progress))
               return (
                 <div key={module.id} className="space-y-3 pb-4 border-b last:border-0 last:pb-0">
                   <div className="flex items-start justify-between gap-4">
@@ -167,10 +168,10 @@ export function DashboardView({ modules, progress, certifications, onNavigate }:
                       </p>
                     </div>
                     <Badge variant="outline">
-                      {progressItem.progress}% Complete
+                      {pct}% Complete
                     </Badge>
                   </div>
-                  <Progress value={progressItem.progress} className="h-2" />
+                  <Progress value={pct} className="h-2" />
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground">
                       {formatDuration(progressItem.timeSpent)} spent

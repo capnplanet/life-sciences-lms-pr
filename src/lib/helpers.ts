@@ -36,7 +36,8 @@ export const MODULE_ICONS: Record<IndustryDomain, string> = {
 
 export function calculateProgress(completed: number, total: number): number {
   if (total === 0) return 0
-  return Math.round((completed / total) * 100)
+  const pct = Math.round((completed / total) * 100)
+  return Math.max(0, Math.min(100, pct))
 }
 
 export function formatDuration(minutes: number): string {
