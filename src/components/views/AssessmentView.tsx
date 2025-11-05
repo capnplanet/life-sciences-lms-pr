@@ -118,7 +118,12 @@ export function AssessmentView({
   const [assessmentComplete, setAssessmentComplete] = useState(false)
   const [finalScore, setFinalScore] = useState(0)
 
-  const questions = SAMPLE_QUESTIONS.slice(0, assessment.adaptive ? 5 : 3)
+  // Prefer module-specific questions; fall back to sample set if none provided
+  const sourceQuestions = (assessment.questions && assessment.questions.length > 0)
+    ? assessment.questions
+    : SAMPLE_QUESTIONS
+  const maxCount = assessment.adaptive ? 10 : 5
+  const questions = sourceQuestions.slice(0, Math.min(maxCount, sourceQuestions.length))
   const question = questions[currentQuestion]
   const rawProgress = ((currentQuestion) / questions.length) * 100
   const progress = Math.max(0, Math.min(100, rawProgress))
@@ -138,9 +143,25 @@ export function AssessmentView({
     }))
   }
 
+  const toggleMultiSelect = (value: string) => {
+    setAnswers(prev => {
+      const current = (prev[question.id] as string[] | undefined) || []
+      const exists = current.includes(value)
+      const updated = exists ? current.filter(v => v !== value) : [...current, value]
+      return { ...prev, [question.id]: updated }
+    })
+  }
+
   const handleSubmitAnswer = () => {
     const userAnswer = answers[question.id]
-    const correct = userAnswer === question.correctAnswer
+    let correct = false
+    if (question.type === 'multi-select' && Array.isArray(question.correctAnswer)) {
+      const ua = Array.isArray(userAnswer) ? userAnswer.slice().sort() : []
+      const ca = (question.correctAnswer as string[]).slice().sort()
+      correct = ua.length === ca.length && ua.every((v, i) => v === ca[i])
+    } else {
+      correct = userAnswer === question.correctAnswer
+    }
     setIsCorrect(correct)
     setShowFeedback(true)
 
@@ -314,42 +335,68 @@ export function AssessmentView({
             )}
           </CardHeader>
           <CardContent className="space-y-6">
-            <RadioGroup
-              value={answers[question.id] as string}
-              onValueChange={handleAnswer}
-              disabled={showFeedback}
-            >
+            {question.type === 'multi-select' ? (
               <div className="space-y-3">
-                {question.options?.map((option, idx) => (
-                  <div
-                    key={idx}
-                    className={`flex items-start space-x-3 rounded-lg border-2 p-4 transition-colors ${
-                      showFeedback
-                        ? option === question.correctAnswer
-                          ? 'border-secondary bg-secondary/10'
-                          : option === answers[question.id]
-                          ? 'border-destructive bg-destructive/10'
-                          : 'border-border'
-                        : 'border-border hover:border-primary'
-                    }`}
-                  >
-                    <RadioGroupItem value={option} id={`option-${idx}`} />
-                    <Label
-                      htmlFor={`option-${idx}`}
-                      className="flex-1 cursor-pointer leading-relaxed"
-                    >
-                      {option}
-                      {showFeedback && option === question.correctAnswer && (
-                        <CheckCircle className="inline-block ml-2 h-5 w-5 text-secondary" weight="fill" />
-                      )}
-                      {showFeedback && option === answers[question.id] && option !== question.correctAnswer && (
-                        <XCircle className="inline-block ml-2 h-5 w-5 text-destructive" weight="fill" />
-                      )}
-                    </Label>
-                  </div>
-                ))}
+                {question.options?.map((option, idx) => {
+                  const selected = ((answers[question.id] as string[] | undefined) || []).includes(option)
+                  const isCorrectOption = Array.isArray(question.correctAnswer) && question.correctAnswer.includes(option)
+                  const showState = showFeedback
+                    ? isCorrectOption
+                      ? 'border-secondary bg-secondary/10'
+                      : selected
+                        ? 'border-destructive bg-destructive/10'
+                        : 'border-border'
+                    : 'border-border hover:border-primary'
+                  return (
+                    <div key={idx} className={`flex items-start space-x-3 rounded-lg border-2 p-4 transition-colors ${showState}`}>
+                      <Checkbox
+                        id={`option-${idx}`}
+                        checked={selected}
+                        onCheckedChange={() => toggleMultiSelect(option)}
+                        disabled={showFeedback}
+                      />
+                      <Label htmlFor={`option-${idx}`} className="flex-1 cursor-pointer leading-relaxed">
+                        {option}
+                      </Label>
+                    </div>
+                  )
+                })}
               </div>
-            </RadioGroup>
+            ) : (
+              <RadioGroup
+                value={answers[question.id] as string}
+                onValueChange={handleAnswer}
+                disabled={showFeedback}
+              >
+                <div className="space-y-3">
+                  {question.options?.map((option, idx) => (
+                    <div
+                      key={idx}
+                      className={`flex items-start space-x-3 rounded-lg border-2 p-4 transition-colors ${
+                        showFeedback
+                          ? option === question.correctAnswer
+                            ? 'border-secondary bg-secondary/10'
+                            : option === answers[question.id]
+                            ? 'border-destructive bg-destructive/10'
+                            : 'border-border'
+                          : 'border-border hover:border-primary'
+                      }`}
+                    >
+                      <RadioGroupItem value={option} id={`option-${idx}`} />
+                      <Label htmlFor={`option-${idx}`} className="flex-1 cursor-pointer leading-relaxed">
+                        {option}
+                        {showFeedback && option === question.correctAnswer && (
+                          <CheckCircle className="inline-block ml-2 h-5 w-5 text-secondary" weight="fill" />
+                        )}
+                        {showFeedback && option === answers[question.id] && option !== question.correctAnswer && (
+                          <XCircle className="inline-block ml-2 h-5 w-5 text-destructive" weight="fill" />
+                        )}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </RadioGroup>
+            )}
 
             {showFeedback && (
               <Card className={isCorrect ? 'border-secondary' : 'border-destructive'}>

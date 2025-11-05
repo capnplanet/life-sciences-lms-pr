@@ -42,6 +42,15 @@ export function ModuleViewer({
   const isLastSection = currentSection === module.content.length - 1
   const progressPercentage = Math.max(0, Math.min(100, Math.round(((currentSection + 1) / module.content.length) * 100)))
 
+  // Guard: if content length changes and index is out of range, clamp to last
+  useEffect(() => {
+    if (currentSection >= module.content.length) {
+      setCurrentSection(Math.max(0, module.content.length - 1))
+    }
+    // reset slide index when section changes
+    setSlideIndex(0)
+  }, [module.content.length])
+
   useEffect(() => {
     // Auto-complete sections without interaction or video after a short dwell
     const needsInteraction = section?.type === 'interactive' && !!section?.interaction
@@ -114,7 +123,8 @@ export function ModuleViewer({
   }
 
   const handleNarrate = () => {
-    if (!('speechSynthesis' in window) || !section?.transcript) {
+    const text = section?.transcript || section?.content
+    if (!('speechSynthesis' in window) || !text) {
       toast.error('Narration unavailable')
       return
     }
@@ -123,7 +133,7 @@ export function ModuleViewer({
       setNarrating(false)
       return
     }
-    const utter = new SpeechSynthesisUtterance(section.transcript)
+    const utter = new SpeechSynthesisUtterance(spellAcronyms(text))
     utter.onend = () => setNarrating(false)
     setNarrating(true)
     window.speechSynthesis.speak(utter)
@@ -164,11 +174,14 @@ export function ModuleViewer({
                           </>
                         )}
                       </Button>
-                      {section.transcript && (
+                      {(section.transcript || section.content) && (
                         <Button variant="outline" size="sm" onClick={handleNarrate}>
                           {narrating ? 'Stop narration' : 'Narrate transcript'}
                         </Button>
                       )}
+                      <Button variant="ghost" size="sm" onClick={() => { setSlideIndex(0); setVideoPlaying(true); }}>
+                        Replay
+                      </Button>
                     </div>
                     <div className="mt-6 bg-card/80 border rounded-lg p-6 text-left">
                       <p className="text-xs text-muted-foreground">Slide {Math.min((section.bookmarks?.length || 0), slideIndex + 1)} of {section.bookmarks?.length || 0}</p>
@@ -200,11 +213,16 @@ export function ModuleViewer({
       case 'text':
         return (
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-6 space-y-4">
               <div className="prose prose-sm max-w-none">
                 <p className="font-serif text-base leading-relaxed text-foreground">
                   {section.content}
                 </p>
+              </div>
+              <div>
+                <Button variant="outline" size="sm" onClick={handleNarrate}>
+                  {narrating ? 'Stop narration' : 'Narrate this section'}
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -498,4 +516,36 @@ function InteractiveQuiz({
       </div>
     </div>
   )
+}
+
+// Force acronyms to be spoken letter-by-letter to avoid TTS pronouncing as a word
+function spellAcronyms(text: string): string {
+  const MAP: Record<string, string> = {
+    'ICH': 'I C H',
+    'GCP': 'G C P',
+    'GMP': 'G M P',
+    'GVP': 'G V P',
+    'EMA': 'E M A',
+    'FDA': 'F D A',
+    'MHRA': 'M H R A',
+    'PMDA': 'P M D A',
+    'TMF': 'T M F',
+    'SOP': 'S O P',
+    'CAPA': 'C A P A',
+    'ALCOA+': 'A L C O A plus',
+    'ALCOA': 'A L C O A',
+    'CTD': 'C T D',
+    'eCTD': 'E C T D',
+    'CFR': 'C F R',
+    'SUSAR': 'S U S A R',
+  }
+  let out = text
+  // Replace explicit mappings first
+  for (const [key, spelled] of Object.entries(MAP)) {
+    const re = new RegExp(`\\b${key.replace('+', '\\+') }\\b`, 'g')
+    out = out.replace(re, spelled)
+  }
+  // Generic fallback: any 2–5 letter all-caps token becomes spaced letters
+  out = out.replace(/\b([A-Z]{2,5})\b/g, (_m, p1: string) => p1.split('').join(' '))
+  return out
 }
