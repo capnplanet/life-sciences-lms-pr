@@ -6,6 +6,8 @@ import { DashboardView } from '@/components/views/DashboardView'
 import { LearningView } from '@/components/views/LearningView'
 import { ModuleViewer } from '@/components/views/ModuleViewer'
 import { AssessmentView } from '@/components/views/AssessmentView'
+import { AssessmentsView } from '@/components/views/AssessmentsView'
+import { GlossaryView } from '@/components/views/GlossaryView'
 import { AnalyticsView } from '@/components/views/AnalyticsView'
 import { CertificationsView } from '@/components/views/CertificationsView'
 import { ContentManagementView } from '@/components/views/ContentManagementView'
@@ -449,6 +451,20 @@ function App() {
             learnerMetrics={MOCK_LEARNER_METRICS}
             moduleMetrics={MOCK_MODULE_METRICS}
           />
+        )
+
+      case 'assessments':
+        return (
+          <AssessmentsView
+            modules={MOCK_MODULES}
+            progress={safeUserProgress}
+            onStartAssessment={handleStartAssessment}
+          />
+        )
+
+      case 'glossary':
+        return (
+          <GlossaryView />
         )
 
       case 'certifications':
