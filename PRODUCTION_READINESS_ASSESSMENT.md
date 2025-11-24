@@ -483,7 +483,7 @@ REGWATCH_AUTHORITIES=FDA,EMA,ICH,PMDA,MHRA,CDSCO,Health Canada
 - **Risk Level:** HIGH
 
 **Backend:**
-- ✅ Jest configured in package.json
+- ✅ Jest and ts-jest listed in devDependencies
 - ✅ Test script available: `npm run test`
 - ❌ No test files found (*.test.ts, *.spec.ts)
 - ❌ Zero test coverage
