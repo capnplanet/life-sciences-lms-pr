@@ -24,14 +24,8 @@ const signatures: Map<string, any> = new Map();
  */
 router.post('/request', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    // Validate request
-    const { documentId, reason, password } = signRequestSchema.parse(req.body);
-
-    // Verify password (21 CFR Part 11 requirement)
-    // TODO: Verify against user's actual password from database
-    if (!password) {
-      throw new ValidationError('Password verification required for electronic signature');
-    }
+    // Validate request (password validation is done by schema)
+    const { documentId, reason } = signRequestSchema.parse(req.body);
 
     // Require reason if configured
     if (process.env.ESIGN_REQUIRE_REASON === 'true' && !reason) {

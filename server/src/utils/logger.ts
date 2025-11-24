@@ -54,12 +54,7 @@ if (process.env.LOG_FILE_PATH) {
       format,
       maxsize: 5242880, // 5MB
       maxFiles: 5,
-    })
-  );
-}
-
-if (process.env.LOG_FILE_PATH) {
-  transports.push(
+    }),
     new winston.transports.File({
       filename: process.env.LOG_FILE_PATH.replace('.log', '-error.log'),
       level: 'error',

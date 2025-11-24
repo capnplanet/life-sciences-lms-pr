@@ -28,6 +28,9 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
   admin: ['modules.read', 'modules.write', 'assessments.read', 'assessments.write', 'analytics.read', 'content.approve', 'admin.manage'],
 };
 
+// Bcrypt configuration (set once at module load)
+const BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS || '12');
+
 /**
  * POST /api/auth/login
  * Authenticate user and return JWT token
@@ -104,7 +107,7 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
     const { name, email, password, role = 'learner' } = registerSchema.parse(req.body);
 
     // Hash password
-    const passwordHash = await bcrypt.hash(password, parseInt(process.env.BCRYPT_ROUNDS || '12'));
+    const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
 
     // TODO: Store user in database
     const mockUser = {

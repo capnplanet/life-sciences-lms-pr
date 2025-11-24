@@ -136,8 +136,14 @@ export class RegWatchService {
    */
   private async fetchRegulatoryUpdates(): Promise<RegulatoryReference[]> {
     // Mock implementation - replace with actual API calls or web scraping
+    // Filter by configured authorities (if none configured, return empty array to avoid confusion)
+    if (this.authorities.length === 0) {
+      logger.warn('No regulatory authorities configured for monitoring');
+      return [];
+    }
+    
     return this.MOCK_UPDATES.filter(update =>
-      this.authorities.length === 0 || this.authorities.includes(update.authority)
+      this.authorities.includes(update.authority)
     );
   }
 

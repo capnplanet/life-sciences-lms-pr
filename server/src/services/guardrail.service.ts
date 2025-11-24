@@ -15,7 +15,9 @@ export interface ValidationResult {
 export class GuardrailService {
   private deterministicMode: boolean;
   
-  // Regulatory authority domains whitelist
+  // Regulatory authority keywords for content validation
+  // Threshold for keyword matching (20% of domain keywords must match)
+  private readonly KEYWORD_MATCH_THRESHOLD = 0.2;
   private readonly REGULATORY_DOMAINS = [
     'fda.gov',
     'ema.europa.eu',
@@ -205,8 +207,8 @@ export class GuardrailService {
         contentLower.includes(keyword.toLowerCase())
       ).length;
       
-      // Require at least 20% keyword match in any domain
-      if (matchCount >= Math.ceil(domain.length * 0.2)) {
+      // Require at least KEYWORD_MATCH_THRESHOLD keyword match in any domain
+      if (matchCount >= Math.ceil(domain.length * this.KEYWORD_MATCH_THRESHOLD)) {
         return true;
       }
     }

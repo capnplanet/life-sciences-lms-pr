@@ -1,12 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
 import { auditLogger } from '../utils/logger.js';
 
+// Extend Express Request to include user and sessionId
+interface AuditRequest extends Request {
+  user?: {
+    id: string;
+    name?: string;
+  };
+  sessionId?: string;
+}
+
 /**
  * Audit middleware for GxP compliance (21 CFR Part 11, GAMP 5)
  * Logs all requests to immutable audit trail
  */
 export const auditMiddleware = (
-  req: Request,
+  req: AuditRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -18,11 +27,11 @@ export const auditMiddleware = (
   const auditEntry = {
     timestamp: new Date().toISOString(),
     action: `${req.method} ${req.path}`,
-    userId: (req as any).user?.id || 'anonymous',
-    userName: (req as any).user?.name || 'anonymous',
+    userId: req.user?.id || 'anonymous',
+    userName: req.user?.name || 'anonymous',
     ip: req.ip,
     userAgent: req.get('user-agent'),
-    sessionId: (req as any).sessionId,
+    sessionId: req.sessionId,
     // Redact sensitive data
     body: sanitizeBody(req.body),
     query: req.query,
