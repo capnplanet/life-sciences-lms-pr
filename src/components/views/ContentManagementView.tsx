@@ -48,8 +48,7 @@ export function ContentManagementView({ modules, auditLog }: ContentManagementPr
   }
 
   const handleExportJSON = () => {
-    const data = exportAuditJSON(auditLog)
-    const blob = new Blob([data], { type: 'application/json' })
+    const blob = exportAuditJSON(auditLog)
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
@@ -60,8 +59,7 @@ export function ContentManagementView({ modules, auditLog }: ContentManagementPr
   }
 
   const handleExportCSV = () => {
-    const data = exportAuditCSV(auditLog)
-    const blob = new Blob([data], { type: 'text/csv' })
+    const blob = exportAuditCSV(auditLog)
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url

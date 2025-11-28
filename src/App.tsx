@@ -13,6 +13,8 @@ import { CertificationsView } from '@/components/views/CertificationsView'
 import { ContentManagementView } from '@/components/views/ContentManagementView'
 import { AIContentReviewView } from '@/components/views/AIContentReviewView'
 import { AIHealthView } from './components/views/AIHealthView'
+import { AssessmentsView } from '@/components/views/AssessmentsView'
+import { GlossaryView } from '@/components/views/GlossaryView'
 import type { UserProgress, Certification, AssessmentResult, DraftContent, AuditLogEntry } from '@/lib/types'
 import {
   MOCK_MODULES,
@@ -51,7 +53,35 @@ function App() {
   const safeCertifications = certifications || []
   const safeDrafts = draftContent || []
 
+  const PAGE_LABELS: Record<string, string> = {
+    'dashboard': 'Dashboard',
+    'learning': 'My Learning',
+    'module-viewer': 'Module Viewer',
+    'assessment': 'Assessment',
+    'assessments': 'Assessments',
+    'analytics': 'Analytics',
+    'certifications': 'Certifications',
+    'glossary': 'Glossary',
+    'content-management': 'Content Management',
+    'ai-content': 'AI Content Review',
+    'ai-health': 'AI Health',
+  }
+
   const handleNavigate = (view: string, moduleId?: string) => {
+    const prevView = currentView
+    const pageName = PAGE_LABELS[view] || view
+    const prevPageName = PAGE_LABELS[prevView] || prevView
+    const details: Record<string, unknown> = {
+      pageId: view,
+      pageName,
+      prevPageId: prevView,
+      prevPageName,
+    }
+    if (moduleId) {
+      const module = MOCK_MODULES.find(m => m.id === moduleId)
+      details.moduleId = moduleId
+      if (module?.title) details.moduleTitle = module.title
+    }
     ;(async () => {
       const entry = await buildAuditEntry({
         userId,
@@ -61,7 +91,7 @@ function App() {
         action: 'NAVIGATE',
         resource: 'ui_view',
         resourceId: view,
-        details: moduleId ? { moduleId } : {},
+        details,
       }, (auditLog || []).slice(-1)[0])
       setAuditLog((cur) => ([...(cur || []), entry]))
     })()
@@ -443,6 +473,18 @@ function App() {
             onNavigate={handleNavigate}
           />
         )
+
+      case 'assessments':
+        return (
+          <AssessmentsView
+            modules={MOCK_MODULES}
+            progress={safeUserProgress}
+            onStartAssessment={handleStartAssessment}
+          />
+        )
+
+      case 'glossary':
+        return <GlossaryView />
 
       case 'analytics':
         return (
