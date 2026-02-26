@@ -1,6 +1,5 @@
 # LifeSci Academy - Regulatory Compliance Learning Management System
-
-A **production-ready**, regulatory-compliant learning management system designed for life sciences professionals, featuring AI-powered content monitoring, adaptive learning paths, and comprehensive compliance tracking across pharmacovigilance, clinical operations, quality assurance, regulatory affairs, and Good Practice standards (GMP, GCP, GPVP, GMLP).
+A learning management system designed for life sciences professionals, featuring AI-powered content monitoring, adaptive learning paths, and comprehensive compliance tracking across pharmacovigilance, clinical operations, quality assurance, regulatory affairs, and Good Practice standards (GMP, GCP, GPVP, GMLP).
 
 ## 🎯 Overview
 
